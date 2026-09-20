@@ -1,0 +1,253 @@
+{
+  "schema": "mira_scene_graph_v1",
+  "case": "hk_street_1234",
+  "edge_direction": "child_to_direct_supporter",
+  "nodes": [
+    {
+      "id": "floor",
+      "kind": "static_environment",
+      "name": "floor",
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false
+    },
+    {
+      "id": "world_anchor",
+      "kind": "virtual_static_anchor",
+      "name": "wall_or_ceiling",
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false
+    },
+    {
+      "id": "object_000",
+      "kind": "object",
+      "mask_index": 0,
+      "mask_file": "input/mask_000.png",
+      "name": "plastic stool",
+      "short_name": "plastic stool",
+      "caption": "A small, four-legged plastic stool with a square seat and slightly splayed legs, colored bright red-orange; it sits upright on the red-tiled pavement in front of the shop entrance.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.98
+    },
+    {
+      "id": "object_001",
+      "kind": "object",
+      "mask_index": 1,
+      "mask_file": "input/mask_001.png",
+      "name": "illuminated sign",
+      "short_name": "illuminated sign",
+      "caption": "A rectangular, box-shaped illuminated sign mounted on the building wall, featuring a white background with red Chinese characters '黑天鹅酒店' (Black Swan Hotel) and English text below; the sign has a visible fan grille on its side and is enclosed in a metal frame with horizontal red stripes.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.95
+    },
+    {
+      "id": "object_002",
+      "kind": "object",
+      "mask_index": 2,
+      "mask_file": "input/mask_002.png",
+      "name": "plastic stool",
+      "short_name": "plastic stool",
+      "caption": "A second identical red-orange plastic stool, same design as index 0—square seat, four splayed legs—positioned slightly behind and to the left of the first stool, also resting on the red-tiled pavement.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.97
+    },
+    {
+      "id": "object_003",
+      "kind": "object",
+      "mask_index": 3,
+      "mask_file": "input/mask_003.png",
+      "name": "hand cart",
+      "short_name": "hand cart",
+      "caption": "A two-wheeled metal hand cart with a flat wooden platform, carrying two stacked cardboard boxes; the cart has red-painted metal handles and blue-rimmed wheels, positioned on the asphalt street beside the green dumpster.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.96
+    },
+    {
+      "id": "object_004",
+      "kind": "object",
+      "mask_index": 4,
+      "mask_file": "input/mask_004.png",
+      "name": "plastic stool",
+      "short_name": "plastic stool",
+      "caption": "A third red-orange plastic stool, identical in shape and material to the others, placed centrally in front of the shop’s open doorway, upright on the red-tiled pavement.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.97
+    },
+    {
+      "id": "object_005",
+      "kind": "object",
+      "mask_index": 5,
+      "mask_file": "input/mask_005.png",
+      "name": "plastic stool",
+      "short_name": "plastic stool",
+      "caption": "A fourth red-orange plastic stool, matching the previous stools in form—square seat, four splayed legs—located near the left edge of the red-tiled area, adjacent to the shop’s purple door frame.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.96
+    },
+    {
+      "id": "object_006",
+      "kind": "object",
+      "mask_index": 6,
+      "mask_file": "input/mask_006.png",
+      "name": "metal dumpster",
+      "short_name": "metal dumpster",
+      "caption": "A large, rectangular green metal dumpster with a hinged lid, bearing faded white Chinese characters '大上' and 'LOC' on its side; it stands on the pavement beside the street, showing signs of wear and rust at the base.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.99
+    },
+    {
+      "id": "object_007",
+      "kind": "object",
+      "mask_index": 7,
+      "mask_file": "input/mask_007.png",
+      "name": "metal table",
+      "short_name": "metal table",
+      "caption": "A small, low rectangular table with a light-colored top and thin red-painted metal legs forming an X-shaped support structure; it sits on the red-tiled pavement between two stools, likely for outdoor dining.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.94
+    },
+    {
+      "id": "object_008",
+      "kind": "object",
+      "mask_index": 8,
+      "mask_file": "input/mask_008.png",
+      "name": "illuminated sign",
+      "short_name": "illuminated sign",
+      "caption": "A long, horizontal illuminated sign projecting from the building facade, displaying '黑天鹅酒店' in large red Chinese characters and 'Black Swan Hotel' in smaller English text beneath; the sign has a white face, red border, and is supported by angled metal brackets attached to the wall.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.97
+    }
+  ],
+  "edges": [
+    {
+      "child": "object_000",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.98,
+      "operational": true
+    },
+    {
+      "child": "object_001",
+      "parent": "world_anchor",
+      "relation": "fixed_to",
+      "supporter_raw": "wall",
+      "confidence": 0.95,
+      "operational": true
+    },
+    {
+      "child": "object_002",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.97,
+      "operational": true
+    },
+    {
+      "child": "object_003",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.96,
+      "operational": true
+    },
+    {
+      "child": "object_004",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.97,
+      "operational": true
+    },
+    {
+      "child": "object_005",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.96,
+      "operational": true
+    },
+    {
+      "child": "object_006",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.99,
+      "operational": true
+    },
+    {
+      "child": "object_007",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.94,
+      "operational": true
+    },
+    {
+      "child": "object_008",
+      "parent": "world_anchor",
+      "relation": "fixed_to",
+      "supporter_raw": "wall",
+      "confidence": 0.97,
+      "operational": true
+    }
+  ],
+  "vlm_inference": {
+    "model": "qwen3-vl-plus"
+  }
+}

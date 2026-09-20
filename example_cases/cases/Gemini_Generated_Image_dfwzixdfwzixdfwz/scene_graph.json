@@ -1,0 +1,229 @@
+{
+  "schema": "mira_scene_graph_v1",
+  "case": "Gemini_Generated_Image_dfwzixdfwzixdfwz",
+  "edge_direction": "child_to_direct_supporter",
+  "nodes": [
+    {
+      "id": "floor",
+      "kind": "static_environment",
+      "name": "floor",
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false
+    },
+    {
+      "id": "world_anchor",
+      "kind": "virtual_static_anchor",
+      "name": "wall_or_ceiling",
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false
+    },
+    {
+      "id": "object_000",
+      "kind": "object",
+      "mask_index": 0,
+      "mask_file": "input/mask_000.png",
+      "name": "wooden crate",
+      "short_name": "wooden crate",
+      "caption": "A weathered wooden crate with metal reinforcements and a diagonal X-brace on its lid, stacked atop another similar crate; it has a rough, dusty texture and appears aged, positioned in the left foreground under a canvas tent support.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.98
+    },
+    {
+      "id": "object_001",
+      "kind": "object",
+      "mask_index": 1,
+      "mask_file": "input/mask_001.png",
+      "name": "retro-futuristic robot",
+      "short_name": "retro-futuristic robot",
+      "caption": "A small, retro-futuristic robot with a spherical glass-domed head, metallic segmented body, backpack-like gear, and articulated limbs; it sits crouched on a wooden crate, holding a small tool or weapon, with visible rivets and wear marks suggesting field use.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.99
+    },
+    {
+      "id": "object_002",
+      "kind": "object",
+      "mask_index": 2,
+      "mask_file": "input/mask_002.png",
+      "name": "off-road vehicle",
+      "short_name": "off-road vehicle",
+      "caption": "A rugged, off-road utility vehicle resembling a Land Rover Defender, painted in faded beige with dust and grime; it features a roof rack loaded with cargo bundles, large all-terrain tires, and a utilitarian boxy shape, parked diagonally in the midground.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.99
+    },
+    {
+      "id": "object_003",
+      "kind": "object",
+      "mask_index": 3,
+      "mask_file": "input/mask_003.png",
+      "name": "stone obelisk",
+      "short_name": "stone obelisk",
+      "caption": "A tall, monolithic stone obelisk with hieroglyphic carvings running vertically along its four faces, tapering to a pyramidal top; it stands upright on a broad stone base, partially illuminated by sunset light, casting a long shadow in the desert camp setting.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.97
+    },
+    {
+      "id": "object_004",
+      "kind": "object",
+      "mask_index": 4,
+      "mask_file": "input/mask_004.png",
+      "name": "stacked wooden crates",
+      "short_name": "stacked wooden crates",
+      "caption": "A stack of three wooden crates of varying sizes: bottom one is large and dark-stained, middle is medium with metal bands, top is smaller and lighter-colored with a latch; they are arranged in a slightly offset tower on the right side of the scene, near a rolled leather bundle.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.96
+    },
+    {
+      "id": "object_005",
+      "kind": "object",
+      "mask_index": 5,
+      "mask_file": "input/mask_005.png",
+      "name": "wooden crate",
+      "short_name": "wooden crate",
+      "caption": "A single medium-sized wooden crate with metal corner protectors and a central latch, placed on the floor to the right of the rolled leather bundle; its surface shows scuff marks and dust, consistent with outdoor storage.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.95
+    },
+    {
+      "id": "object_006",
+      "kind": "object",
+      "mask_index": 6,
+      "mask_file": "input/mask_006.png",
+      "name": "rolled leather bundle",
+      "short_name": "rolled leather bundle",
+      "caption": "A cylindrical rolled leather or canvas bundle secured with two metal buckled straps, lying horizontally on a low wooden crate in the foreground right; its surface is worn and creased, suggesting frequent transport or use in arid conditions.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.94
+    },
+    {
+      "id": "object_007",
+      "kind": "object",
+      "mask_index": 7,
+      "mask_file": "input/mask_007.png",
+      "name": "tent support pole",
+      "short_name": "tent support pole",
+      "caption": "A thick, rough-hewn wooden pole supporting a canvas tent canopy, angled diagonally from upper left toward lower right; it shows natural wood grain and minor splintering, with rope lashings visible near its top attachment point.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.92
+    }
+  ],
+  "edges": [
+    {
+      "child": "object_000",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.98,
+      "operational": true
+    },
+    {
+      "child": "object_001",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": 0,
+      "confidence": 0.99,
+      "operational": true
+    },
+    {
+      "child": "object_002",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.99,
+      "operational": true
+    },
+    {
+      "child": "object_003",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.97,
+      "operational": true
+    },
+    {
+      "child": "object_004",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.96,
+      "operational": true
+    },
+    {
+      "child": "object_005",
+      "parent": "object_007",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.95,
+      "operational": true
+    },
+    {
+      "child": "object_006",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": 5,
+      "confidence": 0.94,
+      "operational": true
+    },
+    {
+      "child": "object_007",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.92,
+      "operational": true
+    }
+  ],
+  "vlm_inference": {
+    "model": "qwen3-vl-plus"
+  },
+  "updated_at": "2026-09-18T03:58:32.139797+00:00"
+}

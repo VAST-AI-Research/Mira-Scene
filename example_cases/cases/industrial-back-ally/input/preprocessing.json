@@ -1,0 +1,21 @@
+{
+  "schema": "mira_preprocessing_v1",
+  "source": "example_cases/images/industrial-back-ally.png",
+  "source_filename": "industrial-back-ally.png",
+  "source_sha256": "8f4d606fc03da589d182f854eb762e0e9c73cc52a09cc4babd4d9086f56c70a0",
+  "original_size": [
+    518,
+    518
+  ],
+  "crop_xywh": [
+    0,
+    0,
+    518,
+    518
+  ],
+  "output_size": [
+    518,
+    518
+  ],
+  "exif_transposed": true
+}

@@ -1,0 +1,7 @@
+{
+  "schema": "mira_case_v1",
+  "case_id": "building_click",
+  "source": "example_cases/images/building_click.png",
+  "source_filename": "building_click.png",
+  "source_sha256": "4186b1725e78c23722d90c5a3dc9e274cc833f920fdb06b5ad9e356b278d0af6"
+}

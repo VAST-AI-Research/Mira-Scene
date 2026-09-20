@@ -1,0 +1,7 @@
+{
+  "schema": "mira_case_v1",
+  "case_id": "012_hotel_lobby",
+  "source": "example_cases/images/012_hotel_lobby.png",
+  "source_filename": "012_hotel_lobby.png",
+  "source_sha256": "98fea0ccc070cb3afa68f6b5b3481a1eed4ac669cf683a0c2e8a9be08bb1abfb"
+}

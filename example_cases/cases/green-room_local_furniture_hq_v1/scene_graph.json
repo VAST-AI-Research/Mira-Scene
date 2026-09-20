@@ -1,0 +1,178 @@
+{
+  "schema": "mira_scene_graph_v1",
+  "case": "green-room_local_furniture_hq_v1",
+  "edge_direction": "child_to_direct_supporter",
+  "nodes": [
+    {
+      "id": "floor",
+      "kind": "static_environment",
+      "name": "floor",
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false
+    },
+    {
+      "id": "world_anchor",
+      "kind": "virtual_static_anchor",
+      "name": "wall_or_ceiling",
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false
+    },
+    {
+      "id": "object_000",
+      "kind": "object",
+      "mask_index": 0,
+      "mask_file": "input/mask_000.png",
+      "name": "fabric sofa",
+      "short_name": "fabric sofa",
+      "caption": "A light gray fabric sofa with a modern low-back design, featuring three seat cushions and three decorative throw pillows (red, lavender, and light gray) arranged along its backrest; it sits upright on a rug with a slight leftward angle.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.98
+    },
+    {
+      "id": "object_001",
+      "kind": "object",
+      "mask_index": 1,
+      "mask_file": "input/mask_001.png",
+      "name": "side cabinet",
+      "short_name": "side cabinet",
+      "caption": "A rectangular white side cabinet with a black top surface and two visible front-facing drawers with small metallic handles; it has clean lines, a minimalist design, and stands vertically on four short legs.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.97
+    },
+    {
+      "id": "object_002",
+      "kind": "object",
+      "mask_index": 2,
+      "mask_file": "input/mask_002.png",
+      "name": "coffee table",
+      "short_name": "coffee table",
+      "caption": "A two-tiered black metal coffee table with a rectangular top and lower shelf, both made of dark matte-finished material; the frame consists of thin intersecting metal bars forming a geometric open structure, placed centrally on the rug.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.96
+    },
+    {
+      "id": "object_003",
+      "kind": "object",
+      "mask_index": 3,
+      "mask_file": "input/mask_003.png",
+      "name": "chandelier",
+      "short_name": "chandelier",
+      "caption": "A brass-colored ornate chandelier with a central stem branching into three arms, each ending in a bowl-shaped lamp holder with frosted glass shades; it hangs centrally from the ceiling with visible suspension rods and decorative finials.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.95
+    },
+    {
+      "id": "object_004",
+      "kind": "object",
+      "mask_index": 4,
+      "mask_file": "input/mask_004.png",
+      "name": "ceramic vase",
+      "short_name": "ceramic vase",
+      "caption": "A tall, slender white ceramic vase with a slightly flared rim and smooth glossy finish, containing a bouquet of green leafy stems (possibly tulips or similar); it stands upright on the floor beside the sofa.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.94
+    },
+    {
+      "id": "object_005",
+      "kind": "object",
+      "mask_index": 5,
+      "mask_file": "input/mask_005.png",
+      "name": "storage basket",
+      "short_name": "storage basket",
+      "caption": "A blue woven plastic storage basket with an open-top rectangular shape and grid-like perforated pattern on its sides; it has a sturdy handle integrated into the top rim and sits upright on the floor near the left window.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.93
+    }
+  ],
+  "edges": [
+    {
+      "child": "object_000",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.98,
+      "operational": true
+    },
+    {
+      "child": "object_001",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.97,
+      "operational": true
+    },
+    {
+      "child": "object_002",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.96,
+      "operational": true
+    },
+    {
+      "child": "object_003",
+      "parent": "world_anchor",
+      "relation": "hangs_from",
+      "supporter_raw": "ceiling",
+      "confidence": 0.95,
+      "operational": true
+    },
+    {
+      "child": "object_004",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.94,
+      "operational": true
+    },
+    {
+      "child": "object_005",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.93,
+      "operational": true
+    }
+  ],
+  "vlm_inference": {
+    "model": "qwen3-vl-plus"
+  }
+}

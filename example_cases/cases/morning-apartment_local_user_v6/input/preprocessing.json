@@ -1,0 +1,21 @@
+{
+  "schema": "mira_preprocessing_v1",
+  "source": "example_cases/images/morning-apartment_local_user_v6.png",
+  "source_filename": "morning-apartment_local_user_v6.png",
+  "source_sha256": "3219fbdbdc0b0a92141601ce56567392a1728e0eb46d515933d8e1f086b13523",
+  "original_size": [
+    518,
+    518
+  ],
+  "crop_xywh": [
+    0,
+    0,
+    518,
+    518
+  ],
+  "output_size": [
+    518,
+    518
+  ],
+  "exif_transposed": true
+}

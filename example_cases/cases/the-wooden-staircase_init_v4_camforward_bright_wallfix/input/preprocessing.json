@@ -1,0 +1,21 @@
+{
+  "schema": "mira_preprocessing_v1",
+  "source": "example_cases/images/the-wooden-staircase_init_v4_camforward_bright_wallfix.png",
+  "source_filename": "the-wooden-staircase_init_v4_camforward_bright_wallfix.png",
+  "source_sha256": "55452b24a3f7946198420e888ff49023e41c62b1a7617a863e0c6fb2c17c636b",
+  "original_size": [
+    518,
+    518
+  ],
+  "crop_xywh": [
+    0,
+    0,
+    518,
+    518
+  ],
+  "output_size": [
+    518,
+    518
+  ],
+  "exif_transposed": true
+}

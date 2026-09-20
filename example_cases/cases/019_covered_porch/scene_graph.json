@@ -1,0 +1,129 @@
+{
+  "schema": "mira_scene_graph_v1",
+  "case": "019_covered_porch",
+  "edge_direction": "child_to_direct_supporter",
+  "nodes": [
+    {
+      "id": "floor",
+      "kind": "static_environment",
+      "name": "floor",
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false
+    },
+    {
+      "id": "world_anchor",
+      "kind": "virtual_static_anchor",
+      "name": "wall_or_ceiling",
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false
+    },
+    {
+      "id": "object_000",
+      "kind": "object",
+      "mask_index": 0,
+      "mask_file": "input/mask_000.png",
+      "name": "outdoor bench",
+      "short_name": "outdoor bench",
+      "caption": "A wooden outdoor bench with slatted backrest and seat, constructed from light-colored natural wood with visible grain; it has armrests and four straight legs, positioned parallel to the house wall on the porch floor.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.98
+    },
+    {
+      "id": "object_001",
+      "kind": "object",
+      "mask_index": 1,
+      "mask_file": "input/mask_001.png",
+      "name": "side table",
+      "short_name": "side table",
+      "caption": "A small square wooden side table with a flat top and four straight legs, made of light-toned wood matching the bench; the tabletop appears slightly worn, and it sits centrally between the bench and rocking chair.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.97
+    },
+    {
+      "id": "object_002",
+      "kind": "object",
+      "mask_index": 2,
+      "mask_file": "input/mask_002.png",
+      "name": "rocking chair",
+      "short_name": "rocking chair",
+      "caption": "A classic wooden rocking chair with vertical slats on the backrest and seat, curved rockers at the base, and armrests; crafted from light-colored wood, it is angled slightly toward the center of the porch, resting on its rockers.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "dynamic",
+      "fixed": false,
+      "dynamic": true,
+      "upright_mode": "auto",
+      "confidence": 0.96
+    },
+    {
+      "id": "object_003",
+      "kind": "object",
+      "mask_index": 3,
+      "mask_file": "input/mask_003.png",
+      "name": "step-through bicycle",
+      "short_name": "step-through bicycle",
+      "caption": "A vintage-style step-through bicycle with a dark gray or black frame, chrome handlebars and fenders, and white-wall tires; it leans against a white porch column, with the front wheel turned slightly inward and the kickstand deployed.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.95
+    }
+  ],
+  "edges": [
+    {
+      "child": "object_000",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.98,
+      "operational": true
+    },
+    {
+      "child": "object_001",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.97,
+      "operational": true
+    },
+    {
+      "child": "object_002",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.96,
+      "operational": true
+    },
+    {
+      "child": "object_003",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": 4,
+      "confidence": 0.95,
+      "operational": true
+    }
+  ],
+  "vlm_inference": {
+    "model": "qwen3-vl-plus"
+  },
+  "updated_at": "2026-09-18T03:55:17.585822+00:00"
+}

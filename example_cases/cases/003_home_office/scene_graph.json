@@ -1,0 +1,153 @@
+{
+  "schema": "mira_scene_graph_v1",
+  "case": "003_home_office",
+  "edge_direction": "child_to_direct_supporter",
+  "nodes": [
+    {
+      "id": "floor",
+      "kind": "static_environment",
+      "name": "floor",
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false
+    },
+    {
+      "id": "world_anchor",
+      "kind": "virtual_static_anchor",
+      "name": "wall_or_ceiling",
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false
+    },
+    {
+      "id": "object_000",
+      "kind": "object",
+      "mask_index": 0,
+      "mask_file": "input/mask_000.png",
+      "name": "floor lamp",
+      "short_name": "floor lamp",
+      "caption": "A modern adjustable floor lamp with a brushed metal (likely stainless steel or aluminum) telescoping stem and articulated arm, supporting a conical white fabric shade; it stands on a circular weighted base and is positioned to the right of the cabinet.",
+      "caption_source": "human",
+      "name_locked": true,
+      "caption_locked": true,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.98
+    },
+    {
+      "id": "object_001",
+      "kind": "object",
+      "mask_index": 1,
+      "mask_file": "input/mask_001.png",
+      "name": "bookshelf",
+      "short_name": "bookshelf",
+      "caption": "A tall, light-oak wooden bookshelf with five open shelves, featuring visible wood grain and clean lines; it is filled with books, small potted plants, and decorative items, and stands flush against the wall near the window.",
+      "caption_source": "human",
+      "name_locked": true,
+      "caption_locked": true,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.99
+    },
+    {
+      "id": "object_002",
+      "kind": "object",
+      "mask_index": 2,
+      "mask_file": "input/mask_002.png",
+      "name": "desk",
+      "short_name": "desk",
+      "caption": "A rectangular light-oak wooden desk with a smooth top surface and straight legs, matching the bookshelf and cabinet; it holds stacked books, papers, and a small plant, and is positioned in front of the bookshelf with an office chair tucked underneath.",
+      "caption_source": "human",
+      "name_locked": true,
+      "caption_locked": true,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.97
+    },
+    {
+      "id": "object_003",
+      "kind": "object",
+      "mask_index": 3,
+      "mask_file": "input/mask_003.png",
+      "name": "office chair",
+      "short_name": "office chair",
+      "caption": "A black ergonomic office chair with a mesh backrest, padded seat, adjustable height via gas lift, and a five-star wheeled base made of black plastic and metal; it is positioned at the desk, slightly swiveled, with arms resting at natural height.",
+      "caption_source": "human",
+      "name_locked": true,
+      "caption_locked": true,
+      "motion": "dynamic",
+      "fixed": false,
+      "dynamic": true,
+      "upright_mode": "auto",
+      "confidence": 0.96
+    },
+    {
+      "id": "object_004",
+      "kind": "object",
+      "mask_index": 4,
+      "mask_file": "input/mask_004.png",
+      "name": "cabinet",
+      "short_name": "cabinet",
+      "caption": "A low, light-oak wooden cabinet with two open cubby shelves on the left (holding books and woven storage baskets) and a single sliding door on the right; it has a flat top displaying a framed artwork and a potted plant, and stands against the wall beside the bookshelf.",
+      "caption_source": "human",
+      "name_locked": true,
+      "caption_locked": true,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.98
+    }
+  ],
+  "edges": [
+    {
+      "child": "object_000",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.98,
+      "operational": true
+    },
+    {
+      "child": "object_001",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.99,
+      "operational": true
+    },
+    {
+      "child": "object_002",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.97,
+      "operational": true
+    },
+    {
+      "child": "object_003",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.96,
+      "operational": true
+    },
+    {
+      "child": "object_004",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.98,
+      "operational": true
+    }
+  ],
+  "vlm_inference": {
+    "model": "qwen3-vl-plus"
+  }
+}

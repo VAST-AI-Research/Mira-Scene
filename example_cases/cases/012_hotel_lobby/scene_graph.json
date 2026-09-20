@@ -1,0 +1,178 @@
+{
+  "schema": "mira_scene_graph_v1",
+  "case": "012_hotel_lobby",
+  "edge_direction": "child_to_direct_supporter",
+  "nodes": [
+    {
+      "id": "floor",
+      "kind": "static_environment",
+      "name": "floor",
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false
+    },
+    {
+      "id": "world_anchor",
+      "kind": "virtual_static_anchor",
+      "name": "wall_or_ceiling",
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false
+    },
+    {
+      "id": "object_000",
+      "kind": "object",
+      "mask_index": 0,
+      "mask_file": "input/mask_000.png",
+      "name": "ottoman",
+      "short_name": "ottoman",
+      "caption": "A round, upholstered ottoman in beige fabric with a slightly tufted top surface and four short, tapered dark wooden legs; it sits on a light-colored area rug in front of the sofa.",
+      "caption_source": "human",
+      "name_locked": true,
+      "caption_locked": true,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.98
+    },
+    {
+      "id": "object_001",
+      "kind": "object",
+      "mask_index": 1,
+      "mask_file": "input/mask_001.png",
+      "name": "coffee table",
+      "short_name": "coffee table",
+      "caption": "A rectangular two-tiered coffee table made of medium-toned wood with clean lines, featuring a top shelf holding books and a tablet, and a lower shelf with stacked books; it has straight, square legs and sits centered on the rug.",
+      "caption_source": "human",
+      "name_locked": true,
+      "caption_locked": true,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.99
+    },
+    {
+      "id": "object_002",
+      "kind": "object",
+      "mask_index": 2,
+      "mask_file": "input/mask_002.png",
+      "name": "sectional sofa",
+      "short_name": "sectional sofa",
+      "caption": "A three-seater sectional sofa in light beige fabric with rolled armrests, deep seat cushions, and multiple matching throw pillows; it has low, dark wooden block feet and is positioned against the wall unit.",
+      "caption_source": "human",
+      "name_locked": true,
+      "caption_locked": true,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.99
+    },
+    {
+      "id": "object_003",
+      "kind": "object",
+      "mask_index": 3,
+      "mask_file": "input/mask_003.png",
+      "name": "armchair",
+      "short_name": "armchair",
+      "caption": "A compact armchair upholstered in rich rust-brown fabric with high back, rolled arms, and a single square beige pillow; it stands on four short, tapered dark wooden legs and is placed near the window.",
+      "caption_source": "human",
+      "name_locked": true,
+      "caption_locked": true,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.97
+    },
+    {
+      "id": "object_004",
+      "kind": "object",
+      "mask_index": 4,
+      "mask_file": "input/mask_004.png",
+      "name": "armchair",
+      "short_name": "armchair",
+      "caption": "A larger armchair in tan or camel-colored fabric with a high back, wide rolled arms, and a plush beige pillow; it features slightly splayed dark wooden legs and is positioned to the right of the coffee table.",
+      "caption_source": "human",
+      "name_locked": true,
+      "caption_locked": true,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.97
+    },
+    {
+      "id": "object_005",
+      "kind": "object",
+      "mask_index": 5,
+      "mask_file": "input/mask_005.png",
+      "name": "potted plant",
+      "short_name": "potted plant",
+      "caption": "A large Ficus lyrata (fiddle-leaf fig) with broad, glossy green leaves arranged in a dense canopy, housed in a terracotta-colored ceramic pot with a smooth finish; the pot sits directly on the floor beside the coffee table.",
+      "caption_source": "human",
+      "name_locked": true,
+      "caption_locked": true,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.96
+    }
+  ],
+  "edges": [
+    {
+      "child": "object_000",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.98,
+      "operational": true
+    },
+    {
+      "child": "object_001",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.99,
+      "operational": true
+    },
+    {
+      "child": "object_002",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.99,
+      "operational": true
+    },
+    {
+      "child": "object_003",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.97,
+      "operational": true
+    },
+    {
+      "child": "object_004",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.97,
+      "operational": true
+    },
+    {
+      "child": "object_005",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.96,
+      "operational": true
+    }
+  ],
+  "vlm_inference": {
+    "model": "qwen3-vl-plus"
+  }
+}

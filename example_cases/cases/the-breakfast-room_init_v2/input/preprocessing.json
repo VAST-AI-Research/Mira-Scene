@@ -1,0 +1,21 @@
+{
+  "schema": "mira_preprocessing_v1",
+  "source": "example_cases/images/the-breakfast-room_init_v2.png",
+  "source_filename": "the-breakfast-room_init_v2.png",
+  "source_sha256": "f4abf383e16dfd64c622fcb4aa280cb6d5cff3a6585cd334beb1c1cf49c2bf52",
+  "original_size": [
+    518,
+    518
+  ],
+  "crop_xywh": [
+    0,
+    0,
+    518,
+    518
+  ],
+  "output_size": [
+    518,
+    518
+  ],
+  "exif_transposed": true
+}

@@ -1,0 +1,128 @@
+{
+  "schema": "mira_scene_graph_v1",
+  "case": "idea_table",
+  "edge_direction": "child_to_direct_supporter",
+  "nodes": [
+    {
+      "id": "floor",
+      "kind": "static_environment",
+      "name": "floor",
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false
+    },
+    {
+      "id": "world_anchor",
+      "kind": "virtual_static_anchor",
+      "name": "wall_or_ceiling",
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false
+    },
+    {
+      "id": "object_000",
+      "kind": "object",
+      "mask_index": 0,
+      "mask_file": "input/mask_000.png",
+      "name": "plastic bottle",
+      "short_name": "plastic bottle",
+      "caption": "A transparent plastic beverage bottle with a white screw-cap, containing amber-colored liquid (about half-full), and a white label with green leaf motifs and Chinese text; it stands upright on the desk with a slightly tapered cylindrical shape.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.98
+    },
+    {
+      "id": "object_001",
+      "kind": "object",
+      "mask_index": 1,
+      "mask_file": "input/mask_001.png",
+      "name": "computer mouse",
+      "short_name": "computer mouse",
+      "caption": "A glossy black ergonomic optical mouse with a smooth curved shell, featuring a central scroll wheel and subtle seam lines; it lies horizontally on the wooden desk surface, oriented toward the right.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.97
+    },
+    {
+      "id": "object_002",
+      "kind": "object",
+      "mask_index": 2,
+      "mask_file": "input/mask_002.png",
+      "name": "banana",
+      "short_name": "banana",
+      "caption": "A ripe yellow banana with slight brown speckling, showing a gentle curve and a brown-tipped stem; it lies diagonally on the desk, angled from lower-left to upper-right, resting on its side.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.99
+    },
+    {
+      "id": "object_003",
+      "kind": "object",
+      "mask_index": 3,
+      "mask_file": "input/mask_003.png",
+      "name": "travel mug",
+      "short_name": "travel mug",
+      "caption": "A beige insulated travel mug with a metallic rim and a C-shaped handle on the right; it has a black lid with a red circular detail (possibly a logo or seal) and a small spoon inserted into the lid’s opening; the mug stands upright on the desk.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.96
+    }
+  ],
+  "edges": [
+    {
+      "child": "object_000",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.98,
+      "operational": true
+    },
+    {
+      "child": "object_001",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.97,
+      "operational": true
+    },
+    {
+      "child": "object_002",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.99,
+      "operational": true
+    },
+    {
+      "child": "object_003",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.96,
+      "operational": true
+    }
+  ],
+  "vlm_inference": {
+    "model": "qwen3-vl-plus"
+  }
+}

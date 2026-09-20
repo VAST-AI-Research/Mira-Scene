@@ -1,0 +1,55 @@
+# Copy to local.yaml and replace every /path/to value. Do not commit secrets.
+api:
+  base_url: https://lumina.tripo3d.com/v1
+  timeout: 300
+
+external:
+  mira_ccm: {repo: /path/to/Mira-CCM}
+  unidataset: {repo: /path/to/UniDataset}
+  sam3: {repo: /path/to/official-sam3, checkpoint: /path/to/sam3.pt}
+  sam3d: {repo: /path/to/sam-3d-objects}
+  ppd: {repo: /path/to/pixel-perfect-depth}
+  moge: {repo: /path/to/MoGe}
+  trellis2: {repo: /path/to/TRELLIS.2}
+
+checkpoints:
+  ccm: /path/to/ccm-pipeline
+  ppd: /path/to/ppd.pth
+  ppd_moge: /path/to/moge2.pt
+  ppd_da2: /path/to/depth_anything_v2_vitl.pth
+  sam3d: /path/to/sam3d/checkpoints/pipeline.yaml
+  trellis2: /path/to/TRELLIS.2-4B
+  rmbg: /path/to/RMBG-2.0
+  dinov3: /path/to/dinov3-vitl16
+
+environments:
+  segmentation: {python: /path/to/mira-segmentation/bin/python}
+  depth: {python: /path/to/mira-geometry/bin/python}
+  ccm: {python: /path/to/mira-ccm/bin/python}
+  mesh: {python: /path/to/mira-sam3d/bin/python}
+  trellis2: {python: /path/to/mira-trellis2/bin/python}
+  floor: {python: /path/to/mira-geometry/bin/python}
+  scene: {python: /path/to/mira-geometry/bin/python}
+  environment: {python: /path/to/mira-geometry/bin/python}
+
+segmentation:
+  device: cuda
+  sam3_confidence: 0.5
+  vlm_model: gemini-2.5-pro
+  object_profile: major_v6
+  room_prompt: list_objects_major_v5.txt
+  tabletop_prompt: list_objects_tabletop_v1.txt
+  recycle: true
+  recycle_verifier_mode: identity_upgrade
+  missing_object_critic_rounds: 0
+  missing_object_critic_prompt: missing_objects_major_v2.txt
+  missing_object_critic_max_overlap: 0.20
+  save_debug: false
+depth: {method: ppd, enable_metric: false}
+mesh:
+  backend: sam3d
+  # SAM3D texture baking is enabled by default. Set false for faster geometry-only output.
+  bake_texture: true
+floor: {generate_texture: true, require_generated: false}
+scene: {solve_method: gravity_joint}
+environment: {alignment_fov_degrees: 60.0}

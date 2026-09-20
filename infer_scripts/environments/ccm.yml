@@ -1,0 +1,39 @@
+name: mira-ccm
+channels: [pytorch, nvidia, conda-forge]
+dependencies:
+  - python=3.11
+  - pytorch=2.5.1
+  - torchvision=0.20.1
+  - pytorch-cuda=12.1
+  - pip
+  - pip:
+      - "diffusers>=0.31"
+      - "transformers>=4.46"
+      - accelerate
+      - spconv-cu120
+      - trimesh
+      - pillow
+      - numpy
+      - tqdm
+      - pyyaml
+      - einops
+      # Mira-CCM relies on APIs that are absent from the unrelated PyPI
+      # package with this name. Keep its upstream commit reproducible.
+      - "utils3d @ git+https://github.com/EasternJournalist/utils3d.git@9a4eb15e4021b67b12c460c7057d642626897ec8"
+      - opencv-python
+      - open3d
+      - jaxtyping
+      - typeguard
+      - omegaconf
+      - hydra-core
+      - pytoml
+      - pytorch-lightning
+      - tensorboard
+      - tensorboardX
+      - peft
+      - webdataset
+      - pandas
+      - h5py
+      - ftfy
+      - imageio-ffmpeg
+      - scikit-image

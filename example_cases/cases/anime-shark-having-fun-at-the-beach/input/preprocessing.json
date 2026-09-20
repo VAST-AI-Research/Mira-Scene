@@ -1,0 +1,21 @@
+{
+  "schema": "mira_preprocessing_v1",
+  "source": "example_cases/images/anime-shark-having-fun-at-the-beach.png",
+  "source_filename": "anime-shark-having-fun-at-the-beach.png",
+  "source_sha256": "95502b7fd0f15cb5405f27db65127a84e2dc3280082a3597e7508451d6464454",
+  "original_size": [
+    518,
+    518
+  ],
+  "crop_xywh": [
+    0,
+    0,
+    518,
+    518
+  ],
+  "output_size": [
+    518,
+    518
+  ],
+  "exif_transposed": true
+}

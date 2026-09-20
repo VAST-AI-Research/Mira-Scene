@@ -1,0 +1,26 @@
+name: mira-geometry
+channels: [pytorch, nvidia, conda-forge]
+dependencies:
+  - python=3.11
+  - pytorch=2.5.1
+  - torchvision=0.20.1
+  - pytorch-cuda=12.1
+  - numpy
+  - scipy
+  - pillow
+  - opencv
+  - trimesh
+  - open3d
+  - tqdm
+  - pyyaml
+  - pip
+  - pip:
+      - "openai>=1.55"
+      - safetensors
+      - huggingface_hub
+      - omegaconf
+      - timm==0.9.1
+      - einops
+      - scikit-learn
+      - matplotlib
+      - "utils3d @ git+https://github.com/EasternJournalist/utils3d.git@c5daf6f6c244d251f252102d09e9b7bcef791a38"

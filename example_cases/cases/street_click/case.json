@@ -1,0 +1,7 @@
+{
+  "schema": "mira_case_v1",
+  "case_id": "street_click",
+  "source": "example_cases/images/street_click.png",
+  "source_filename": "street_click.png",
+  "source_sha256": "e93077864536eb006f291f2bcc502947d342605a524a1d19b52c1e0eb0592cc3"
+}

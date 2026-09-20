@@ -1,0 +1,54 @@
+name: mira-sam3d
+channels: [pytorch, nvidia, conda-forge]
+dependencies:
+  - python=3.11
+  - pytorch=2.5.1
+  - torchvision=0.20.1
+  - pytorch-cuda=12.1
+  - pip
+  - pip:
+      - hydra-core
+      - omegaconf
+      - trimesh
+      - pillow
+      - "numpy<2"
+      - tqdm
+      - pyyaml
+      - loguru
+      - timm==0.9.16
+      - einops-exts
+      - fvcore
+      - peft==0.10.0
+      - scipy
+      - scikit-image
+      - imageio
+      - matplotlib
+      - huggingface-hub
+      - ftfy
+      - webdataset
+      - h5py
+      - pytoml
+      - imageio-ffmpeg
+      - open3d
+      - pymeshlab
+      - lightning
+      - tensorboard
+      - tensorboardX
+      - optree
+      - astor
+      - roma
+      - xatlas
+      - point-cloud-utils
+      - pymeshfix
+      - pyvista
+      - igraph
+      - easydict
+      - "moge @ git+https://github.com/microsoft/MoGe.git@a8c37341bc0325ca99b9d57981cc3bb2bd3e255b"
+      - opencv-python==4.9.0.80
+      - spconv-cu121==2.3.8
+      - "utils3d @ git+https://github.com/EasternJournalist/utils3d.git@9a4eb15e4021b67b12c460c7057d642626897ec8"
+
+# nvdiffrast==0.4.0 and mip-splatting's diff-gaussian-rasterization are
+# compiled CUDA dependencies of SAM3D's rasterization paths. They are built
+# against this environment's PyTorch by install_external_projects.sh after
+# the base environment has been created.

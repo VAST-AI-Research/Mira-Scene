@@ -1,0 +1,7 @@
+{
+  "schema": "mira_case_v1",
+  "case_id": "005_cafe_patio",
+  "source": "example_cases/images/005_cafe_patio.png",
+  "source_filename": "005_cafe_patio.png",
+  "source_sha256": "19fbd60df724e494cb87a0b0fd9a033354b0132c6f5dc5168bce2619c5a0f39a"
+}

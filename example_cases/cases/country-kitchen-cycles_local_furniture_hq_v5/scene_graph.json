@@ -1,0 +1,203 @@
+{
+  "schema": "mira_scene_graph_v1",
+  "case": "country-kitchen-cycles_local_furniture_hq_v5",
+  "edge_direction": "child_to_direct_supporter",
+  "nodes": [
+    {
+      "id": "floor",
+      "kind": "static_environment",
+      "name": "floor",
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false
+    },
+    {
+      "id": "world_anchor",
+      "kind": "virtual_static_anchor",
+      "name": "wall_or_ceiling",
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false
+    },
+    {
+      "id": "object_000",
+      "kind": "object",
+      "mask_index": 0,
+      "mask_file": "input/mask_000.png",
+      "name": "dining table",
+      "short_name": "dining table",
+      "caption": "A rectangular dining table with a smooth white laminate top and four straight, square-profile legs made of light-colored wood or painted material; it stands upright on the floor in the center-right of the room.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.95
+    },
+    {
+      "id": "object_001",
+      "kind": "object",
+      "mask_index": 1,
+      "mask_file": "input/mask_001.png",
+      "name": "kitchen island",
+      "short_name": "kitchen island",
+      "caption": "A freestanding kitchen island with a light wood-grain countertop and white cabinet base featuring two doors and two drawers with round knobs; it has a boxy, rectangular shape and sits on the wooden floor near the center-left.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.95
+    },
+    {
+      "id": "object_002",
+      "kind": "object",
+      "mask_index": 2,
+      "mask_file": "input/mask_002.png",
+      "name": "upper cabinets",
+      "short_name": "upper cabinets",
+      "caption": "A set of wall-mounted upper cabinets in white matte finish, consisting of three rectangular doors with subtle paneling and no visible handles; they are mounted beneath the range hood and above the stove.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.9
+    },
+    {
+      "id": "object_003",
+      "kind": "object",
+      "mask_index": 3,
+      "mask_file": "input/mask_003.png",
+      "name": "gas range",
+      "short_name": "gas range",
+      "caption": "A black freestanding gas range with a stainless steel control panel, four burners on the cooktop, and an oven below with a glass door and handle; it has a rectangular block shape and sits flush against the wall.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.95
+    },
+    {
+      "id": "object_004",
+      "kind": "object",
+      "mask_index": 4,
+      "mask_file": "input/mask_004.png",
+      "name": "pendant lamp",
+      "short_name": "pendant lamp",
+      "caption": "A pendant lamp with a conical, amber-colored fabric or paper shade suspended from the ceiling by a thin red cord; the shade is smooth and slightly tapered, casting downward light.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.9
+    },
+    {
+      "id": "object_005",
+      "kind": "object",
+      "mask_index": 5,
+      "mask_file": "input/mask_005.png",
+      "name": "range hood",
+      "short_name": "range hood",
+      "caption": "A stainless steel range hood with a rectangular boxy body and angled front baffle, featuring a metallic brushed finish and a white underside; it is mounted directly above the stove and attached to the wall.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.9
+    },
+    {
+      "id": "object_006",
+      "kind": "object",
+      "mask_index": 6,
+      "mask_file": "input/mask_006.png",
+      "name": "wooden chair",
+      "short_name": "wooden chair",
+      "caption": "A simple wooden chair with a white-painted frame, four straight legs, a rectangular backrest, and a flat seat upholstered in red fabric; it is positioned at the dining table, slightly pulled out.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.9
+    }
+  ],
+  "edges": [
+    {
+      "child": "object_000",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.95,
+      "operational": true
+    },
+    {
+      "child": "object_001",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.95,
+      "operational": true
+    },
+    {
+      "child": "object_002",
+      "parent": "world_anchor",
+      "relation": "fixed_to",
+      "supporter_raw": "wall",
+      "confidence": 0.9,
+      "operational": true
+    },
+    {
+      "child": "object_003",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.95,
+      "operational": true
+    },
+    {
+      "child": "object_004",
+      "parent": "world_anchor",
+      "relation": "hangs_from",
+      "supporter_raw": "ceiling",
+      "confidence": 0.9,
+      "operational": true
+    },
+    {
+      "child": "object_005",
+      "parent": "world_anchor",
+      "relation": "fixed_to",
+      "supporter_raw": "wall",
+      "confidence": 0.9,
+      "operational": true
+    },
+    {
+      "child": "object_006",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.9,
+      "operational": true
+    }
+  ],
+  "vlm_inference": {
+    "model": "qwen3-vl-plus"
+  }
+}

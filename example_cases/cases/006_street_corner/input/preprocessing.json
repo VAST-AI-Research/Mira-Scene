@@ -1,0 +1,21 @@
+{
+  "schema": "mira_preprocessing_v1",
+  "source": "example_cases/images/006_street_corner.png",
+  "source_filename": "006_street_corner.png",
+  "source_sha256": "58942fa655ab7c02405891ee0c1ef964b52bcc5d78574bf243a88b4783971d74",
+  "original_size": [
+    518,
+    518
+  ],
+  "crop_xywh": [
+    0,
+    0,
+    518,
+    518
+  ],
+  "output_size": [
+    518,
+    518
+  ],
+  "exif_transposed": true
+}

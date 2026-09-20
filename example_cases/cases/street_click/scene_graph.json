@@ -1,0 +1,153 @@
+{
+  "schema": "mira_scene_graph_v1",
+  "case": "street_click",
+  "edge_direction": "child_to_direct_supporter",
+  "nodes": [
+    {
+      "id": "floor",
+      "kind": "static_environment",
+      "name": "floor",
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false
+    },
+    {
+      "id": "world_anchor",
+      "kind": "virtual_static_anchor",
+      "name": "wall_or_ceiling",
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false
+    },
+    {
+      "id": "object_000",
+      "kind": "object",
+      "mask_index": 0,
+      "mask_file": "input/mask_000.png",
+      "name": "compact hatchback",
+      "short_name": "compact hatchback",
+      "caption": "A bright red compact hatchback car, likely a Ford Focus, parked on the roadside with its front facing slightly left; it has silver alloy wheels, clear headlight covers, and a visible UK license plate. The car is positioned on asphalt, partially in shadow, with its right side adjacent to a lamppost.",
+      "caption_source": "human",
+      "name_locked": true,
+      "caption_locked": true,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.98
+    },
+    {
+      "id": "object_001",
+      "kind": "object",
+      "mask_index": 1,
+      "mask_file": "input/mask_001.png",
+      "name": "panel van",
+      "short_name": "panel van",
+      "caption": "A white commercial panel van, possibly a Ford Transit, with blue 'DEEBI' lettering on its side; it features a high roof, sliding side door, black trim around windows, and standard steel wheels. The van is parked parallel to the road curb, angled slightly toward the camera, with its front facing left.",
+      "caption_source": "human",
+      "name_locked": true,
+      "caption_locked": true,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.97
+    },
+    {
+      "id": "object_002",
+      "kind": "object",
+      "mask_index": 2,
+      "mask_file": "input/mask_002.png",
+      "name": "brick building",
+      "short_name": "brick building",
+      "caption": "A three-story brick building with a rectangular footprint and flat roof, constructed from light-brown stretcher-bond bricks; it has evenly spaced white-framed sash windows (two per floor per visible facade), a ground-floor entrance with a dark door, and subtle architectural detailing at corners. The building stands upright on a paved sidewalk, with a low metal fence at its base.",
+      "caption_source": "human",
+      "name_locked": true,
+      "caption_locked": true,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.99
+    },
+    {
+      "id": "object_003",
+      "kind": "object",
+      "mask_index": 3,
+      "mask_file": "input/mask_003.png",
+      "name": "cast-iron lamppost",
+      "short_name": "cast-iron lamppost",
+      "caption": "A traditional ornate cast-iron lamppost with a tall slender pole, decorative bands, and a classic lantern-style lamp head featuring glass panes and a pointed finial; the pole is painted black and anchored in concrete at the sidewalk edge. It stands vertically on the pavement, left of the van, with no visible motion or attachment to other objects.",
+      "caption_source": "human",
+      "name_locked": true,
+      "caption_locked": true,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.96
+    },
+    {
+      "id": "object_004",
+      "kind": "object",
+      "mask_index": 4,
+      "mask_file": "input/mask_004.png",
+      "name": "cast-iron lamppost",
+      "short_name": "cast-iron lamppost",
+      "caption": "A second identical traditional cast-iron lamppost, matching the first in design: black-painted pole with ornamental bands, topped by a multi-pane glass lantern with a pointed finial; it is positioned on the grass verge beside the road, near the red car’s front right wheel. The pole is rigidly fixed into the ground and casts a long shadow.",
+      "caption_source": "human",
+      "name_locked": true,
+      "caption_locked": true,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.96
+    }
+  ],
+  "edges": [
+    {
+      "child": "object_000",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.98,
+      "operational": true
+    },
+    {
+      "child": "object_001",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.97,
+      "operational": true
+    },
+    {
+      "child": "object_002",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.99,
+      "operational": true
+    },
+    {
+      "child": "object_003",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.96,
+      "operational": true
+    },
+    {
+      "child": "object_004",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.96,
+      "operational": true
+    }
+  ],
+  "vlm_inference": {
+    "model": "qwen3-vl-plus"
+  }
+}

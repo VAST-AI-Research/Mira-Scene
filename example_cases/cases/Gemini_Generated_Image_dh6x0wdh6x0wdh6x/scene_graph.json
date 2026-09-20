@@ -1,0 +1,228 @@
+{
+  "schema": "mira_scene_graph_v1",
+  "case": "Gemini_Generated_Image_dh6x0wdh6x0wdh6x",
+  "edge_direction": "child_to_direct_supporter",
+  "nodes": [
+    {
+      "id": "floor",
+      "kind": "static_environment",
+      "name": "floor",
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false
+    },
+    {
+      "id": "world_anchor",
+      "kind": "virtual_static_anchor",
+      "name": "wall_or_ceiling",
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false
+    },
+    {
+      "id": "object_000",
+      "kind": "object",
+      "mask_index": 0,
+      "mask_file": "input/mask_000.png",
+      "name": "koi fish",
+      "short_name": "koi fish",
+      "caption": "A vibrant koi fish with orange, white, and black markings swims near the surface of the pond; its elongated body is slightly curved, fins are translucent and gently fanned, and scales shimmer under ambient light.",
+      "caption_source": "human",
+      "name_locked": true,
+      "caption_locked": true,
+      "motion": "dynamic",
+      "fixed": false,
+      "dynamic": true,
+      "upright_mode": "auto",
+      "confidence": 0.95
+    },
+    {
+      "id": "object_001",
+      "kind": "object",
+      "mask_index": 1,
+      "mask_file": "input/mask_001.png",
+      "name": "koi fish",
+      "short_name": "koi fish",
+      "caption": "A second koi fish, predominantly white with blue-black patches and orange accents, glides just below the water surface; its streamlined body and flowing tail suggest gentle forward motion.",
+      "caption_source": "human",
+      "name_locked": true,
+      "caption_locked": true,
+      "motion": "dynamic",
+      "fixed": false,
+      "dynamic": true,
+      "upright_mode": "auto",
+      "confidence": 0.92
+    },
+    {
+      "id": "object_002",
+      "kind": "object",
+      "mask_index": 2,
+      "mask_file": "input/mask_002.png",
+      "name": "floating lantern",
+      "short_name": "floating lantern",
+      "caption": "A circular floating lantern made of transparent glass or resin with a red rim, holding three lit candles on a shallow metal tray; it rests on the water’s surface, creating ripples and warm reflections.",
+      "caption_source": "human",
+      "name_locked": true,
+      "caption_locked": true,
+      "motion": "dynamic",
+      "fixed": false,
+      "dynamic": true,
+      "upright_mode": "auto",
+      "confidence": 0.98
+    },
+    {
+      "id": "object_003",
+      "kind": "object",
+      "mask_index": 3,
+      "mask_file": "input/mask_003.png",
+      "name": "koi fish",
+      "short_name": "koi fish",
+      "caption": "A golden-orange koi fish with subtle white highlights swims horizontally in mid-pond; its dorsal fin is erect, and its body shows smooth curvature with visible scale texture under dim lighting.",
+      "caption_source": "human",
+      "name_locked": true,
+      "caption_locked": true,
+      "motion": "dynamic",
+      "fixed": false,
+      "dynamic": true,
+      "upright_mode": "auto",
+      "confidence": 0.94
+    },
+    {
+      "id": "object_004",
+      "kind": "object",
+      "mask_index": 4,
+      "mask_file": "input/mask_004.png",
+      "name": "koi fish",
+      "short_name": "koi fish",
+      "caption": "A white-and-black koi fish with prominent black patches on its head and back swims diagonally upward; its pectoral fins are extended, and its eye is clearly visible, indicating active movement.",
+      "caption_source": "human",
+      "name_locked": true,
+      "caption_locked": true,
+      "motion": "dynamic",
+      "fixed": false,
+      "dynamic": true,
+      "upright_mode": "auto",
+      "confidence": 0.91
+    },
+    {
+      "id": "object_005",
+      "kind": "object",
+      "mask_index": 5,
+      "mask_file": "input/mask_005.png",
+      "name": "red wooden bench",
+      "short_name": "red wooden bench",
+      "caption": "A low, rectangular wooden bench painted bright red, with four short legs and a flat top supporting a dark brown cushion; it sits on a stone platform beside the pond, angled slightly toward the viewer.",
+      "caption_source": "human",
+      "name_locked": true,
+      "caption_locked": true,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.99
+    },
+    {
+      "id": "object_006",
+      "kind": "object",
+      "mask_index": 6,
+      "mask_file": "input/mask_006.png",
+      "name": "iris plants",
+      "short_name": "iris plants",
+      "caption": "A clump of tall, slender green irises with long sword-like leaves and purple-blue blossoms emerging from the pond edge; the base is rooted in wet soil among stones, with some leaves arching over the water.",
+      "caption_source": "human",
+      "name_locked": true,
+      "caption_locked": true,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.97
+    },
+    {
+      "id": "object_007",
+      "kind": "object",
+      "mask_index": 7,
+      "mask_file": "input/mask_007.png",
+      "name": "stone lantern",
+      "short_name": "stone lantern",
+      "caption": "A traditional Japanese stone lantern (tōrō) with tiered roof, ornate eaves, and a glowing square opening; carved from gray weathered stone, it stands upright on a stone step beside the pond, emitting warm interior light.",
+      "caption_source": "human",
+      "name_locked": true,
+      "caption_locked": true,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.99
+    }
+  ],
+  "edges": [
+    {
+      "child": "object_000",
+      "parent": null,
+      "relation": "unknown",
+      "supporter_raw": "unknown",
+      "confidence": 0.95,
+      "operational": false
+    },
+    {
+      "child": "object_001",
+      "parent": null,
+      "relation": "unknown",
+      "supporter_raw": "unknown",
+      "confidence": 0.92,
+      "operational": false
+    },
+    {
+      "child": "object_002",
+      "parent": null,
+      "relation": "rests_on",
+      "supporter_raw": "water",
+      "confidence": 0.98,
+      "operational": false
+    },
+    {
+      "child": "object_003",
+      "parent": null,
+      "relation": "unknown",
+      "supporter_raw": "unknown",
+      "confidence": 0.94,
+      "operational": false
+    },
+    {
+      "child": "object_004",
+      "parent": null,
+      "relation": "unknown",
+      "supporter_raw": "unknown",
+      "confidence": 0.91,
+      "operational": false
+    },
+    {
+      "child": "object_005",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.99,
+      "operational": true
+    },
+    {
+      "child": "object_006",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.97,
+      "operational": true
+    },
+    {
+      "child": "object_007",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.99,
+      "operational": true
+    }
+  ],
+  "vlm_inference": {
+    "model": "qwen3-vl-plus"
+  }
+}

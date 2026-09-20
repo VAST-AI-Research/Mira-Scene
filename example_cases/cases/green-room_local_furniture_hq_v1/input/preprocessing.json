@@ -1,0 +1,21 @@
+{
+  "schema": "mira_preprocessing_v1",
+  "source": "example_cases/images/green-room_local_furniture_hq_v1.png",
+  "source_filename": "green-room_local_furniture_hq_v1.png",
+  "source_sha256": "e8f7a4dbc3aa90bf278ed939c68a7240ff3cf1e17eea2d788a2d2799c96a9b50",
+  "original_size": [
+    518,
+    518
+  ],
+  "crop_xywh": [
+    0,
+    0,
+    518,
+    518
+  ],
+  "output_size": [
+    518,
+    518
+  ],
+  "exif_transposed": true
+}

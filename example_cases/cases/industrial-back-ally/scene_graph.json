@@ -1,0 +1,178 @@
+{
+  "schema": "mira_scene_graph_v1",
+  "case": "industrial-back-ally",
+  "edge_direction": "child_to_direct_supporter",
+  "nodes": [
+    {
+      "id": "floor",
+      "kind": "static_environment",
+      "name": "floor",
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false
+    },
+    {
+      "id": "world_anchor",
+      "kind": "virtual_static_anchor",
+      "name": "wall_or_ceiling",
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false
+    },
+    {
+      "id": "object_000",
+      "kind": "object",
+      "mask_index": 0,
+      "mask_file": "input/mask_000.png",
+      "name": "metal barrel",
+      "short_name": "metal barrel",
+      "caption": "A dark gray metallic barrel with a slightly dented cylindrical body, standing upright on the concrete ground; its surface shows subtle wear and faint horizontal ridges typical of industrial steel drums.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.95
+    },
+    {
+      "id": "object_001",
+      "kind": "object",
+      "mask_index": 1,
+      "mask_file": "input/mask_001.png",
+      "name": "utility cabinet",
+      "short_name": "utility cabinet",
+      "caption": "A rectangular metal utility cabinet with a light gray front door featuring a small handle and latch, mounted vertically against a brick wall; the cabinet has a boxy shape with visible seams and slight rust at the base.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.92
+    },
+    {
+      "id": "object_002",
+      "kind": "object",
+      "mask_index": 2,
+      "mask_file": "input/mask_002.png",
+      "name": "plastic barrel stack",
+      "short_name": "plastic barrel stack",
+      "caption": "A pyramid stack of six blue plastic barrels—three on the bottom row, two in the middle, and one on top—each with visible ribbed reinforcement rings and slightly weathered surfaces; the stack is stable and positioned on the ground near a building corner.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.94
+    },
+    {
+      "id": "object_003",
+      "kind": "object",
+      "mask_index": 3,
+      "mask_file": "input/mask_003.png",
+      "name": "metal barrel",
+      "short_name": "metal barrel",
+      "caption": "A dark gray metallic barrel, similar to index 0, standing upright on the concrete floor; it appears slightly taller and narrower, with a smooth surface and no visible markings or dents.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.9
+    },
+    {
+      "id": "object_004",
+      "kind": "object",
+      "mask_index": 4,
+      "mask_file": "input/mask_004.png",
+      "name": "plastic barrel",
+      "short_name": "plastic barrel",
+      "caption": "A medium-blue plastic barrel with vertical ribbing and a slightly reflective surface, standing upright; its top rim is visible and appears intact, and the barrel shows minor scuffing consistent with outdoor storage.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.93
+    },
+    {
+      "id": "object_005",
+      "kind": "object",
+      "mask_index": 5,
+      "mask_file": "input/mask_005.png",
+      "name": "metal barrel",
+      "short_name": "metal barrel",
+      "caption": "A reddish-brown metallic barrel with visible rust streaks and a slightly corroded surface; it stands upright with a standard cylindrical shape and reinforced ridges, positioned near other barrels against the brick wall.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.91
+    }
+  ],
+  "edges": [
+    {
+      "child": "object_000",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.95,
+      "operational": true
+    },
+    {
+      "child": "object_001",
+      "parent": "world_anchor",
+      "relation": "fixed_to",
+      "supporter_raw": "wall",
+      "confidence": 0.92,
+      "operational": true
+    },
+    {
+      "child": "object_002",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.94,
+      "operational": true
+    },
+    {
+      "child": "object_003",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.9,
+      "operational": true
+    },
+    {
+      "child": "object_004",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.93,
+      "operational": true
+    },
+    {
+      "child": "object_005",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.91,
+      "operational": true
+    }
+  ],
+  "vlm_inference": {
+    "model": "qwen3-vl-plus"
+  }
+}

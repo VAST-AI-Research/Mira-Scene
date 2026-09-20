@@ -1,0 +1,21 @@
+{
+  "schema": "mira_preprocessing_v1",
+  "source": "example_cases/images/Gemini_Generated_Image_sjbz27sjbz27sjbz.png",
+  "source_filename": "Gemini_Generated_Image_sjbz27sjbz27sjbz.png",
+  "source_sha256": "8cd0438a0a01441673da7abe8b2fbf22c06d23f03bd9f13951697bd9fcccc75f",
+  "original_size": [
+    518,
+    518
+  ],
+  "crop_xywh": [
+    0,
+    0,
+    518,
+    518
+  ],
+  "output_size": [
+    518,
+    518
+  ],
+  "exif_transposed": true
+}

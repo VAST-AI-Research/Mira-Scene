@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mira-Scene · Segmentation Review</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="styles.css?v=20260918-2">
+</head>
+<body data-stage="0">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></div>
+      <div><strong>Mira-Scene · Segmentation Review</strong><small>Interactive segmentation · Optional automation · Scene graph</small></div>
+    </div>
+    <div class="system-state"><span class="state-dot ready" id="state-dot"></span><span id="system-state">Ready</span></div>
+  </header>
+
+  <main class="workspace">
+    <aside class="panel source-panel">
+      <section class="source-section">
+        <div class="section-heading"><span class="eyebrow">01 · INPUT IMAGE</span></div>
+        <input id="case-upload" type="file" accept="image/png,image/jpeg,image/webp,image/bmp,image/tiff,.png,.jpg,.jpeg,.webp,.bmp,.tif,.tiff">
+        <div class="upload-picker">
+          <div class="upload-drop" id="case-upload-btn" role="button" tabindex="0" aria-label="Upload an image">
+            <strong>Drop an image here</strong><span>or click to add an image for segmentation</span>
+          </div>
+        </div>
+        <label class="crop-option locked" title="Mira-Scene inputs are always center-cropped">
+          <input type="checkbox" checked disabled>
+          <span class="crop-toggle" aria-hidden="true"><i></i></span>
+          <span class="crop-copy"><strong>Crop to square</strong><small>Centered crop · normalized to 518×518</small></span>
+        </label>
+        <p class="hint">Images are prepared here; create masks interactively or run optional automatic segmentation.</p>
+      </section>
+      <section class="recent-section">
+        <div class="section-heading"><span class="eyebrow">02 · PREPROCESSED CASES</span><span class="count" id="case-count">0</span></div>
+        <div id="case-list" class="case-list" role="listbox" aria-label="Cases"><div class="empty-small">Loading cases…</div></div>
+      </section>
+    </aside>
+
+    <section class="canvas-column">
+      <div class="canvas-toolbar" id="canvas-toolbar">
+        <div class="tool-group" role="group" aria-label="Editing tools">
+          <button class="tool active" data-tool="select" type="button">Select</button>
+          <button class="tool" data-tool="positive" type="button"><span class="plus-dot"></span>Positive</button>
+          <button class="tool" data-tool="negative" type="button"><span class="minus-dot"></span>Negative</button>
+          <button class="tool" data-tool="box" type="button">Box</button>
+          <button class="tool" data-tool="text" type="button">Text</button>
+          <button class="tool" data-tool="brush" type="button">Brush</button>
+          <button class="tool" data-tool="erase" type="button">Erase</button>
+        </div>
+        <div class="history-controls">
+          <button class="history-button" id="undo-paint" type="button" disabled>Undo</button>
+          <button class="history-button" id="redo-paint" type="button" disabled>Redo</button>
+        </div>
+        <label class="brush-size-control" id="brush-size-control" hidden><span>Brush Size</span><input id="brush-size" type="range" min="4" max="96" step="2" value="24"><output id="brush-size-value">24 px</output></label>
+        <div class="toolbar-tail"><label class="range-label">Overlay <input id="opacity" type="range" min="0" max="100" value="58"></label><button class="secondary" id="clear-prompts" type="button">Reset Edit</button></div>
+      </div>
+
+      <div class="stage-wrap" id="stage-wrap">
+        <div class="empty-stage" id="empty-stage"><div class="empty-orbit"><span></span></div><h1>Turn a scene into editable objects</h1><p>Select a case or upload an image, then refine its masks with SAM3 points, boxes, or brush tools.</p></div>
+        <div class="segmentation-workspace" id="segmentation-workspace">
+          <section class="segmentation-pane preview-pane" aria-label="Interactive segmentation preview">
+            <div class="segmentation-pane-heading"><strong>Preview</strong><span>RGB + object overlays</span></div>
+            <div class="segmentation-canvas-surface"><canvas id="scene-canvas"></canvas><div class="paint-cursor" id="paint-cursor" hidden></div></div>
+          </section>
+          <section class="segmentation-pane selected-mask-pane" aria-label="Selected mask" aria-hidden="true" hidden>
+            <div class="segmentation-pane-heading"><strong>Selected Mask</strong><span id="selected-mask-name">No mask selected</span></div>
+            <div class="segmentation-mask-surface">
+              <canvas id="selected-mask-canvas" aria-label="Black and white selected mask preview"></canvas>
+              <div class="selected-mask-cursor" id="selected-mask-cursor" hidden aria-hidden="true"></div>
+              <div class="selected-mask-empty" id="selected-mask-empty">Select an object or floor mask to preview it here.</div>
+            </div>
+          </section>
+          <div class="scene-graph-divider" id="scene-graph-divider" role="separator" aria-label="Resize scene graph" aria-orientation="horizontal" tabindex="0"></div>
+          <section class="scene-graph-pane" aria-label="Scene graph">
+            <div class="scene-graph-heading"><strong>Scene Graph</strong><div class="graph-heading-actions"><span id="graph-status">Loading…</span><div class="graph-zoom-controls"><button id="graph-zoom-out" type="button">−</button><button id="graph-zoom-reset" type="button">100%</button><button id="graph-zoom-in" type="button">＋</button></div><button id="reset-scene-graph" type="button" disabled>Reset</button></div></div>
+            <div id="stage-graph" class="scene-graph"><div class="viewer-empty"><strong>Scene graph unavailable</strong><span>Load a case to view its support graph.</span></div></div>
+            <div id="scene-graph-editor" class="scene-graph-editor"><span>Select an object node to edit its support relationship.</span></div>
+          </section>
+        </div>
+        <div class="run-overlay hidden" id="run-overlay"><div class="spinner"></div><strong id="run-title">Running segmentation</strong><span id="run-detail">Please keep this page open…</span></div>
+      </div>
+      <div class="statusbar"><span id="canvas-meta">No scene loaded</span><div class="zoom-controls"><button id="zoom-out" type="button" aria-label="Zoom out">−</button><button id="reset-zoom" type="button">100%</button><button id="zoom-in" type="button" aria-label="Zoom in">＋</button></div><span>Stage 0 · Segmentation</span><span id="cursor-meta">x — · y —</span></div>
+    </section>
+
+    <aside class="panel object-panel">
+      <section class="auto-segment-panel">
+        <button class="primary wide" id="auto-segment" type="button" disabled><span class="button-icon">✦</span>Auto-Segment Image</button>
+        <p class="hint">Run or rerun automatic segmentation for the selected input.</p>
+      </section>
+      <section class="objects-section">
+        <div class="section-heading"><span class="eyebrow">03 · OBJECT MASKS</span><div class="object-heading-actions"><span class="count" id="object-count">0</span><button class="mask-add" id="toggle-add-object" type="button" aria-expanded="false" disabled>＋ Add object</button></div></div>
+        <div class="add-object-panel" id="add-object-panel" hidden>
+          <label for="text-prompt">Add by text</label><div class="prompt-row"><input id="text-prompt" type="text" placeholder="e.g. wooden chair"><button class="secondary" id="add-by-text" type="button">Add</button></div>
+          <div class="add-object-divider">or</div><button class="secondary wide" id="add-prompt-mask" type="button">＋ Add with points / box</button>
+        </div>
+        <div class="object-list" id="object-list"><div class="empty-small">Objects will appear here after segmentation</div></div>
+      </section>
+      <section class="sam-panel">
+        <div class="section-heading"><span class="eyebrow">04 · EDIT MASK</span><span class="review-progress" id="review-progress">0 / 0 reviewed</span></div>
+        <div class="edit-guide"><strong id="edit-target">No mask selected</strong><span id="edit-hint">Select a mask, then refine it with SAM3 or paint tools.</span></div>
+        <div class="text-prompt-editor" id="text-prompt-editor" hidden><label for="layer-text-prompt">SAM3 Text prompt</label><div class="prompt-row"><input id="layer-text-prompt" type="text" placeholder="e.g. red chair"><button class="secondary" id="run-text-prompt" type="button">Run SAM3</button></div></div>
+        <div class="caption-editor" id="caption-editor" hidden><label for="caption-input">Detailed caption</label><textarea id="caption-input" rows="3" placeholder="Describe appearance, material, and geometry"></textarea></div>
+        <div class="prompt-summary"><span><i class="legend positive"></i><b id="positive-count">0</b> Positive</span><span><i class="legend negative"></i><b id="negative-count">0</b> Negative</span><span><i class="legend box"></i><b id="box-count">0</b> Box</span></div>
+        <div class="candidate-strip hidden" id="candidate-strip"><span><span>Candidates <b id="candidate-count">0</b></span><small id="candidate-active"></small></span><div id="candidate-buttons"></div></div>
+      </section>
+      <section class="save-panel">
+        <div class="section-heading"><span class="eyebrow">05 · STAGE ACTION</span></div>
+        <label class="estimate-graph-option"><input id="estimate-scene-graph" type="checkbox"><span>Estimate Scene Graph</span></label>
+        <button class="primary wide" id="save-review" type="button" disabled>Save Edited Masks</button>
+        <button class="secondary wide save-graph-button" id="save-scene-graph" type="button" disabled>Save Scene Graph</button>
+        <p class="hint" id="result-summary">Select a case to begin.</p>
+      </section>
+    </aside>
+  </main>
+  <div class="toast-region" id="toasts" aria-live="polite"></div>
+  <script src="app.js?v=20260920-1"></script>
+</body>
+</html>

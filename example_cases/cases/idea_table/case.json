@@ -1,0 +1,7 @@
+{
+  "schema": "mira_case_v1",
+  "case_id": "idea_table",
+  "source": "example_cases/images/idea_table.png",
+  "source_filename": "idea_table.png",
+  "source_sha256": "79b0a6b0ac20320dc136d477d200cfa017dce5aeb90e24797745723fcf865e3f"
+}

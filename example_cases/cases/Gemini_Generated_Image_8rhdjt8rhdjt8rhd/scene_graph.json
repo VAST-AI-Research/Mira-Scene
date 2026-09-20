@@ -1,0 +1,154 @@
+{
+  "schema": "mira_scene_graph_v1",
+  "case": "Gemini_Generated_Image_8rhdjt8rhdjt8rhd",
+  "edge_direction": "child_to_direct_supporter",
+  "nodes": [
+    {
+      "id": "floor",
+      "kind": "static_environment",
+      "name": "floor",
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false
+    },
+    {
+      "id": "world_anchor",
+      "kind": "virtual_static_anchor",
+      "name": "wall_or_ceiling",
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false
+    },
+    {
+      "id": "object_000",
+      "kind": "object",
+      "mask_index": 0,
+      "mask_file": "input/mask_000.png",
+      "name": "watering can",
+      "short_name": "watering can",
+      "caption": "A polished stainless steel watering can with a long, curved spout and a C-shaped handle; it has a reflective metallic surface, cylindrical body, and sits upright on the wooden table.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.95
+    },
+    {
+      "id": "object_001",
+      "kind": "object",
+      "mask_index": 1,
+      "mask_file": "input/mask_001.png",
+      "name": "ghost chair",
+      "short_name": "ghost chair",
+      "caption": "A transparent acrylic 'Ghost Chair' (Louis Ghost style) with smooth, molded contours: high back with rounded top, armrests integrated into the frame, and four slightly splayed legs; the material is clear and glossy, revealing foliage behind it.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.98
+    },
+    {
+      "id": "object_002",
+      "kind": "object",
+      "mask_index": 2,
+      "mask_file": "input/mask_002.png",
+      "name": "pendant lamp",
+      "short_name": "pendant lamp",
+      "caption": "A vintage-style pendant lamp with a ribbed, dome-shaped glass shade in amber-tinted glass, mounted on a brass-colored metal base and finial; it hangs vertically from above, suspended by a thin cord or rod not fully visible.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.92
+    },
+    {
+      "id": "object_003",
+      "kind": "object",
+      "mask_index": 3,
+      "mask_file": "input/mask_003.png",
+      "name": "workbench",
+      "short_name": "workbench",
+      "caption": "A rustic wooden workbench with a thick plank top, visible grain and wear, supported by sturdy rectangular legs and a lower shelf holding slatted wood pieces; the surface shows minor scuffs and moisture marks.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.97
+    },
+    {
+      "id": "object_004",
+      "kind": "object",
+      "mask_index": 4,
+      "mask_file": "input/mask_004.png",
+      "name": "glass terrarium",
+      "short_name": "glass terrarium",
+      "caption": "A geometric glass terrarium with a pyramidal roof and metal frame (likely brass or bronze), housing lush green mosses and small ferns inside; it sits on the wooden table and features a hinged door at the front.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.96
+    }
+  ],
+  "edges": [
+    {
+      "child": "object_000",
+      "parent": "object_003",
+      "relation": "rests_on",
+      "supporter_raw": 4,
+      "confidence": 0.95,
+      "operational": true
+    },
+    {
+      "child": "object_001",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.98,
+      "operational": true
+    },
+    {
+      "child": "object_002",
+      "parent": "world_anchor",
+      "relation": "hangs_from",
+      "supporter_raw": "ceiling",
+      "confidence": 0.92,
+      "operational": true
+    },
+    {
+      "child": "object_003",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.97,
+      "operational": true
+    },
+    {
+      "child": "object_004",
+      "parent": "object_003",
+      "relation": "rests_on",
+      "supporter_raw": 3,
+      "confidence": 0.96,
+      "operational": true
+    }
+  ],
+  "vlm_inference": {
+    "model": "qwen3-vl-plus"
+  },
+  "updated_at": "2026-09-18T03:56:52.979197+00:00"
+}

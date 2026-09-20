@@ -1,0 +1,203 @@
+{
+  "schema": "mira_scene_graph_v1",
+  "case": "the-white-room-cycles_countrylike_v12_bookshelf_full",
+  "edge_direction": "child_to_direct_supporter",
+  "nodes": [
+    {
+      "id": "floor",
+      "kind": "static_environment",
+      "name": "floor",
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false
+    },
+    {
+      "id": "world_anchor",
+      "kind": "virtual_static_anchor",
+      "name": "wall_or_ceiling",
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false
+    },
+    {
+      "id": "object_000",
+      "kind": "object",
+      "mask_index": 0,
+      "mask_file": "input/mask_000.png",
+      "name": "leather sofa",
+      "short_name": "leather sofa",
+      "caption": "A modern, off-white leather sofa with a curved backrest and armrests, featuring two seat cushions and a slightly reclined posture; it sits on a light wooden floor with a small decorative pillow on the right side.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.98
+    },
+    {
+      "id": "object_001",
+      "kind": "object",
+      "mask_index": 1,
+      "mask_file": "input/mask_001.png",
+      "name": "upholstered armchair",
+      "short_name": "upholstered armchair",
+      "caption": "A compact, off-white upholstered armchair with rounded contours, wide armrests, and a striped pink-and-white cushion on the seat; positioned near a radiator on the right side of the room.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.97
+    },
+    {
+      "id": "object_002",
+      "kind": "object",
+      "mask_index": 2,
+      "mask_file": "input/mask_002.png",
+      "name": "upholstered armchair",
+      "short_name": "upholstered armchair",
+      "caption": "A matching off-white armchair with a slightly more upright posture, featuring a green patterned cushion on the seat and a clean, minimalist design; placed near the bay window and coffee table.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.97
+    },
+    {
+      "id": "object_003",
+      "kind": "object",
+      "mask_index": 3,
+      "mask_file": "input/mask_003.png",
+      "name": "coffee table",
+      "short_name": "coffee table",
+      "caption": "A low, rectangular white coffee table with a glossy surface, supported by four short, tapered legs; it holds a tray with cups and a small bowl, and sits atop a dark purple rug.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.95
+    },
+    {
+      "id": "object_004",
+      "kind": "object",
+      "mask_index": 4,
+      "mask_file": "input/mask_004.png",
+      "name": "floor lamp",
+      "short_name": "floor lamp",
+      "caption": "A tall floor lamp with a slender metallic stand and a cylindrical blue fabric shade; it stands upright beside the right armchair, near the wall-mounted radiator.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.96
+    },
+    {
+      "id": "object_005",
+      "kind": "object",
+      "mask_index": 5,
+      "mask_file": "input/mask_005.png",
+      "name": "fireplace",
+      "short_name": "fireplace",
+      "caption": "A traditional white-painted fireplace with a rectangular black firebox opening, flanked by ornate molding and topped with a mantelpiece holding a TV; the structure is built into the wall and appears fixed.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.99
+    },
+    {
+      "id": "object_006",
+      "kind": "object",
+      "mask_index": 6,
+      "mask_file": "input/mask_006.png",
+      "name": "bookcase",
+      "short_name": "bookcase",
+      "caption": "A white open-shelf bookcase with three tiers, containing books, decorative boxes, and framed items; it stands against the left wall, adjacent to the fireplace, with a clean, modern aesthetic.",
+      "caption_source": "vlm",
+      "name_locked": false,
+      "caption_locked": false,
+      "motion": "fixed",
+      "fixed": true,
+      "dynamic": false,
+      "upright_mode": "auto",
+      "confidence": 0.94
+    }
+  ],
+  "edges": [
+    {
+      "child": "object_000",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.98,
+      "operational": true
+    },
+    {
+      "child": "object_001",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.97,
+      "operational": true
+    },
+    {
+      "child": "object_002",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.97,
+      "operational": true
+    },
+    {
+      "child": "object_003",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.95,
+      "operational": true
+    },
+    {
+      "child": "object_004",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.96,
+      "operational": true
+    },
+    {
+      "child": "object_005",
+      "parent": "world_anchor",
+      "relation": "fixed_to",
+      "supporter_raw": "wall",
+      "confidence": 0.99,
+      "operational": true
+    },
+    {
+      "child": "object_006",
+      "parent": "floor",
+      "relation": "rests_on",
+      "supporter_raw": "floor",
+      "confidence": 0.94,
+      "operational": true
+    }
+  ],
+  "vlm_inference": {
+    "model": "qwen3-vl-plus"
+  }
+}

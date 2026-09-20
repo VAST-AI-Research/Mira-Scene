@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mira-Scene Result Viewer</title>
+  <link rel="stylesheet" href="common.css?v=20260918-4">
+  <script type="importmap">
+    {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}
+  </script>
+</head>
+<body>
+  <header class="topbar">
+    <div><p class="eyebrow">Mira-Scene Results</p><h1>Generated scene viewer</h1></div>
+    <label for="case-select">Scene case <select id="case-select"></select></label>
+  </header>
+  <main id="app" class="content"><p class="status">Loading manifest…</p></main>
+  <script type="module" src="result_vis.js?v=20260918-4"></script>
+</body>
+</html>

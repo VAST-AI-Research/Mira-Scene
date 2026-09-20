@@ -1,0 +1,68 @@
+{
+  "schema": "mira_segmentation_review_v1",
+  "case": "anime-shark-having-fun-at-the-beach",
+  "revision": 0,
+  "created_at": "2026-09-20T10:07:22.792306+00:00",
+  "updated_at": "2026-09-20T10:07:22.792325+00:00",
+  "objects": [
+    {
+      "id": "object_000",
+      "name": "cartoon shark",
+      "short_name": "cartoon shark",
+      "caption": "A cartoonish turquoise shark with a wide open mouth showing sharp white teeth, wearing a red bowtie; it stands upright on two legs on the sand, with a friendly yet exaggerated expression and smooth plastic-like surface finish.",
+      "name_locked": false,
+      "caption_locked": false,
+      "source": "existing_segmentation"
+    },
+    {
+      "id": "object_001",
+      "name": "beach umbrella",
+      "short_name": "beach umbrella",
+      "caption": "A large beach umbrella with alternating red and white radial stripes, made of fabric stretched over a central pole and ribs; it is planted vertically in the sand, tilted slightly toward the viewer, casting a soft shadow.",
+      "name_locked": false,
+      "caption_locked": false,
+      "source": "existing_segmentation"
+    },
+    {
+      "id": "object_002",
+      "name": "rubber duck",
+      "short_name": "rubber duck",
+      "caption": "A small yellow rubber duck with an orange beak and black eyes, floating on the water near the shore; its glossy surface suggests molded plastic, and it is positioned horizontally with slight tilt.",
+      "name_locked": false,
+      "caption_locked": false,
+      "source": "existing_segmentation"
+    },
+    {
+      "id": "object_003",
+      "name": "octagonal rock",
+      "short_name": "octagonal rock",
+      "caption": "A dark gray, irregularly shaped octagonal rock with a matte stone texture and a lighter gray patch on one side; it lies flat on the sandy ground in the foreground, partially buried.",
+      "name_locked": false,
+      "caption_locked": false,
+      "source": "existing_segmentation"
+    },
+    {
+      "id": "object_004",
+      "name": "beach chair",
+      "short_name": "beach chair",
+      "caption": "A red folding beach chair with a simple wooden frame and fabric seat/back; it is set up on the sand, angled slightly left, with visible leg supports and a relaxed recline posture.",
+      "name_locked": false,
+      "caption_locked": false,
+      "source": "existing_segmentation"
+    },
+    {
+      "id": "object_005",
+      "name": "palm tree",
+      "short_name": "palm tree",
+      "caption": "A stylized palm tree with a slender brown trunk curving gently to the right and a crown of broad green fronds; the trunk appears smooth and cartoon-rendered, rooted in the sand near the water’s edge.",
+      "name_locked": false,
+      "caption_locked": false,
+      "source": "existing_segmentation"
+    }
+  ],
+  "metadata": {
+    "engine": "existing_segmentation",
+    "source": "adopt_existing",
+    "adopted_at": "2026-09-20T10:07:22.792329+00:00"
+  }
+}

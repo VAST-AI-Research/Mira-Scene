@@ -1,0 +1,7 @@
+{
+  "schema": "mira_case_v1",
+  "case_id": "hk_street_1234",
+  "source": "example_cases/images/hk_street_1234.png",
+  "source_filename": "hk_street_1234.png",
+  "source_sha256": "6a89a95c8df3bb63ee1db15a9943f61cc301350ebac60af5621b50cc9f274fdd"
+}

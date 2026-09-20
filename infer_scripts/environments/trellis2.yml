@@ -1,0 +1,32 @@
+name: mira-trellis2
+channels: [pytorch, nvidia, conda-forge]
+dependencies:
+  - python=3.10
+  # Keep this pair aligned with the explicit cu124 wheel used by
+  # install_external_projects.sh.  A plain `pytorch=2.6` solve can select a
+  # CPU build on clusters whose conda channels are mirrored.
+  - pytorch=2.6
+  - torchvision=0.21
+  - pytorch-cuda=12.4
+  - pip
+  - pip:
+      - "openai>=1.55"
+      - pillow
+      - numpy
+      - trimesh
+      - imageio
+      - tqdm
+      - pyyaml
+      - easydict
+      - opencv-python-headless
+      - ninja
+      # RMBG-2.0's trust_remote_code BiRefNet does not call post_init(), while
+      # Transformers 5 requires it to populate all_tied_weights_keys.
+      - transformers==4.57.6
+      - imageio-ffmpeg
+      - pandas
+      - lpips
+      - zstandard
+      - "utils3d @ git+https://github.com/EasternJournalist/utils3d.git@9a4eb15e4021b67b12c460c7057d642626897ec8"
+      - kornia
+      - timm

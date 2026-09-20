@@ -1,0 +1,21 @@
+{
+  "schema": "mira_preprocessing_v1",
+  "source": "example_cases/images/019_covered_porch.png",
+  "source_filename": "019_covered_porch.png",
+  "source_sha256": "b42e5f8a57e25e308666bd5ee06bbbf9fe191d81046918a1e10e681bff599ac2",
+  "original_size": [
+    518,
+    518
+  ],
+  "crop_xywh": [
+    0,
+    0,
+    518,
+    518
+  ],
+  "output_size": [
+    518,
+    518
+  ],
+  "exif_transposed": true
+}

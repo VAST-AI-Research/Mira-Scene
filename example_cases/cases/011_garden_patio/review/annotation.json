@@ -1,0 +1,59 @@
+{
+  "schema": "mira_segmentation_review_v1",
+  "case": "011_garden_patio",
+  "revision": 0,
+  "created_at": "2026-09-20T10:07:25.850542+00:00",
+  "updated_at": "2026-09-20T10:07:25.850567+00:00",
+  "objects": [
+    {
+      "id": "object_000",
+      "name": "garden bench",
+      "short_name": "garden bench",
+      "caption": "A wooden garden bench with slatted backrest and seat, made of weathered light-brown timber; it has armrests and four straight legs, positioned on a stone patio with its left side partially shaded by foliage.",
+      "name_locked": false,
+      "caption_locked": false,
+      "source": "existing_segmentation"
+    },
+    {
+      "id": "object_001",
+      "name": "folding chair",
+      "short_name": "folding chair",
+      "caption": "A wooden folding chair with vertical slats on the backrest and horizontal slats on the seat, constructed from light-colored weathered wood; it stands upright on four splayed legs, placed beside the table on the patio.",
+      "name_locked": false,
+      "caption_locked": false,
+      "source": "existing_segmentation"
+    },
+    {
+      "id": "object_002",
+      "name": "dining table",
+      "short_name": "dining table",
+      "caption": "A rectangular outdoor dining table with a slatted top made of light-colored wood (likely teak or similar), supported by four straight legs connected by an X-shaped cross-brace understructure; it sits centrally on the paved patio, casting a soft shadow.",
+      "name_locked": false,
+      "caption_locked": false,
+      "source": "existing_segmentation"
+    },
+    {
+      "id": "object_003",
+      "name": "lounge chair",
+      "short_name": "lounge chair",
+      "caption": "A metal-framed reclining lounge chair with beige fabric sling seat and back, featuring a padded cylindrical headrest pillow; the frame is silver-gray aluminum with a folding mechanism, positioned at an angle on the grass near potted plants.",
+      "name_locked": false,
+      "caption_locked": false,
+      "source": "existing_segmentation"
+    },
+    {
+      "id": "object_004",
+      "name": "folding chair",
+      "short_name": "folding chair",
+      "caption": "A second wooden folding chair identical in design to index 1—slatted back and seat, light-weathered wood, four splayed legs—placed opposite the bench across the table, slightly angled toward the center.",
+      "name_locked": false,
+      "caption_locked": false,
+      "source": "existing_segmentation"
+    }
+  ],
+  "metadata": {
+    "engine": "existing_segmentation",
+    "source": "adopt_existing",
+    "adopted_at": "2026-09-20T10:07:25.850570+00:00"
+  }
+}

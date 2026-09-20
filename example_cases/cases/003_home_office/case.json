@@ -1,0 +1,7 @@
+{
+  "schema": "mira_case_v1",
+  "case_id": "003_home_office",
+  "source": "example_cases/images/003_home_office.png",
+  "source_filename": "003_home_office.png",
+  "source_sha256": "4cd9214188790a45b1d83691381658e8a6ed02105546210e6c47cdd22670b581"
+}
