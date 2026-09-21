@@ -381,7 +381,8 @@ def construct_scene(depth_result, depth_method, scene_data, meshes, floor_metada
     graph_decisions, _, _ = prepare_support_graph(scene_graph, count, support_confidence)
     # ``upright_mode`` is an optional per-object scene-graph override.  Missing
     # values are treated as ``auto`` for backwards compatibility: accepted
-    # operational rests_on edges determine the constraint as before.
+    # operational rests_on edges determine the constraint as before. Newly
+    # generated hanging objects use ``force`` in the segmentation graph.
     derived_upright = [False] * count
     for decision in graph_decisions:
         if decision["status"] == "accepted":

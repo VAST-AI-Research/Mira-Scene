@@ -50,6 +50,11 @@ descendants.
 | `scene` | Object initialization and gravity/support-aware placement. |
 | `environment` | Equirectangular environment map. |
 
+Scene-graph objects with a `hangs_from` support relation default to
+`upright_mode: force`, keeping suspended objects vertically aligned. This can
+be changed to `auto` or `free` for an individual object in the Web UI when its
+orientation should follow the support or remain unconstrained.
+
 ## Environment setup
 
 Different stages have incompatible Python/PyTorch/CUDA requirements. Follow

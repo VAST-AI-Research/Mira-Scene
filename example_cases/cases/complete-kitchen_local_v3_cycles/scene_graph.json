@@ -101,7 +101,7 @@
       "motion": "fixed",
       "fixed": true,
       "dynamic": false,
-      "upright_mode": "auto",
+      "upright_mode": "force",
       "confidence": 0.96
     }
   ],

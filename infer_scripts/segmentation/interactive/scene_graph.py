@@ -69,10 +69,16 @@ def generate_scene_graph(case_dir: Path, objects: list[dict[str, Any]], client: 
             if name_locked
             else inferred.get("name") or annotation.get("short_name") or name
         )
+        # Hanging objects are normally suspended from above, so keep their
+        # canonical up axis aligned with world up.  Preserve an existing
+        # per-object override (including ``free``) when a graph is regenerated.
+        upright_mode = old.get("upright_mode")
+        if upright_mode is None:
+            upright_mode = "force" if relation == "hangs_from" else "auto"
         nodes.append({"id":oid,"kind":"object","mask_index":index,"mask_file":f"input/mask_{index:03d}.png",
             "name":short_name,"short_name":short_name,"caption":str(caption),"caption_source":"human" if caption_locked else "vlm",
             "name_locked":name_locked,"caption_locked":caption_locked,"motion":motion,"fixed":motion=="fixed",
-            "dynamic":motion=="dynamic","upright_mode":old.get("upright_mode", "auto"),"confidence":confidence})
+            "dynamic":motion=="dynamic","upright_mode":upright_mode,"confidence":confidence})
         edges.append({"child":oid,"parent":parent,"relation":relation,"supporter_raw":supporter,
                       "confidence":confidence,"operational":parent is not None})
     graph = {"schema":"mira_scene_graph_v1","case":case_dir.name,"edge_direction":"child_to_direct_supporter",

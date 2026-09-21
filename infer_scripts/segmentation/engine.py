@@ -86,7 +86,10 @@ def _publish_scene_graph(case_dir: Path, records: list[dict[str, Any]], stage1: 
             "caption": record["caption"], "caption_source": "stage1_caption_audit",
             "name_locked": False, "caption_locked": False, "motion": motion,
             "fixed": motion == "fixed", "dynamic": motion == "dynamic",
-            "upright_mode": "auto", "confidence": 1.0,
+            # A hanging object is suspended from above and should retain a
+            # world-up canonical orientation unless the user later changes it
+            # in the scene-graph editor.
+            "upright_mode": "force" if relation == "hangs_from" else "auto", "confidence": 1.0,
             "automatic_source_id": record["source_id"],
         })
         edges.append({

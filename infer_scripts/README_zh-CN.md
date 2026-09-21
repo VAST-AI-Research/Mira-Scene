@@ -48,6 +48,10 @@ cloud。`最终结果` 表示 scene geometry 与 environment panorama 的可视�
 | `scene` | 初始化物体，并进行重力与支撑关系优化。 |
 | `environment` | 生成等距柱状环境图。 |
 
+scene graph 中关系为 `hangs_from` 的物体默认使用
+`upright_mode: force`，使悬挂物体保持竖直方向。如果某个物体的方向应跟随支撑物
+或不受约束，可在 Web UI 中单独改为 `auto` 或 `free`。
+
 ## 环境配置
 
 不同阶段的 Python、PyTorch 和 CUDA 依赖并不完全兼容。按照
