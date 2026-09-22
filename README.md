@@ -1,5 +1,7 @@
 # Mira-Scene: Pixel-Aligned Layouts for Generative 3D Scene Reconstruction
 
+📄 [Paper](https://arxiv.org/abs/2609.23796) | 🌐 [Project Page](https://sunyangtian.github.io/Mira-Scene-web/)
+
 Mira-Scene reconstructs an editable 3D scene from a single image. The pipeline
 combines interactive instance segmentation, depth estimation, canonical
 coordinate and voxel prediction, object mesh generation, scene assembly, and
