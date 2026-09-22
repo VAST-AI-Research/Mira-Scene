@@ -34,3 +34,14 @@ for details.
 ## ToDo
 
 - Release the training code & example training data.
+
+## Citation
+
+```bibtex
+@article{sun2026mira,
+  title={Mira-Scene: Pixel-Aligned Layouts for Generative 3D Scene Reconstruction},
+  author={Sun Yang-Tian and Liu Tianjia and Huang Zehuan and Huang Yi-Hua and Lyu Xiaoyang and Yang Ziyi and Zou Zi-Xin and Guo Yuan-Chen and Cao Yan-Pei and Qi Xiaojuan},
+  journal={arXiv preprint arXiv:2609.23796},
+  year={2026}
+}
+```
