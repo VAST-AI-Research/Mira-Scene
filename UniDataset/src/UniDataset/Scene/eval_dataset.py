@@ -1,5 +1,5 @@
 """
-EvalDataset for reading image, mask, and optional GT data from case directories.
+EvalDataset for reading evaluation data in the format defined by eval_data/README.md.
 
 Returns raw image/mask (numpy) + GT data. Preprocessing is handled by
 DataProcessor.prepare_inference_input() in validation_step, ensuring
@@ -20,7 +20,7 @@ from torch.utils.data import Dataset
 
 class EvalDataset(Dataset):
     """
-    Evaluation dataset that reads from case-based image/mask directories.
+    Evaluation dataset that reads from the standardized eval_data format.
 
     Expected structure per case:
         {eval_dir}/{scene_id}/input/scene.png

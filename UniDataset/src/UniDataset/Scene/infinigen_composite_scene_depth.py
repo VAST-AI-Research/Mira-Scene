@@ -1,5 +1,5 @@
 """
-BlenderProc scene dataset with depth-based canonical coordinate map.
+Infinigen composite scene dataset with depth-based canonical coordinate map.
 
 Based on blenderproc_scene_lightweight.py, but:
   - Removes latent_voxel_centers / latent_voxel_cam_pts
@@ -28,6 +28,8 @@ depth_to_canonical_coord_map unprojection (same as threedfuture_scene_depth):
     canonical = T_cam_to_can @ [X_cam, Y_cam, Z_cam, 1]
 """
 
+import hashlib
+import io
 import json
 import os
 import random
@@ -41,13 +43,14 @@ import h5py
 import numpy as np
 import torch
 import trimesh
+from PIL import Image
 from torch.utils.data import Dataset
-from ..typing import *
+from .typing import *
 from UniDataset.utils.config import parse_structured
 from UniDataset.utils.img_and_mask_transforms import crop_around_mask
 
-from ...utils.normalization_utils import normalize_object
-from ...utils.voxel_utils import voxelize_trimesh_obj, gen_voxel_grid
+from ..utils.normalization_utils import normalize_object
+from ..utils.voxel_utils import voxelize_trimesh_obj, gen_voxel_grid
 
 # Enable OpenEXR reading before cv2 is imported.
 os.environ.setdefault("OPENCV_IO_ENABLE_OPENEXR", "1")
@@ -240,17 +243,24 @@ def _voxel_scale_cache_path(
     model_id: str,
     scale_vec: np.ndarray,
     voxel_res: int,
+    geometry_sha256: str,
 ) -> str:
     """
-    Build a cache file path keyed on (model_id, scale aspect ratio, voxel_res).
+    Build a cache path keyed on geometry content, scale aspect ratio and resolution.
 
     Only the aspect ratio of scale_vec matters because normalize_object()
     always rescales the mesh to [-0.5, 0.5].  Dividing by the max absolute
     component collapses all uniform scales to the same key.
     """
+    if len(geometry_sha256) != 64 or any(
+        char not in "0123456789abcdef" for char in geometry_sha256.lower()
+    ):
+        raise ValueError("geometry_sha256 must be a 64-character hexadecimal digest")
     ratio = scale_vec / np.max(np.abs(scale_vec))
     ratio_str = "_".join(f"{v:.3f}" for v in np.round(ratio, 3))
-    filename = f"{model_id}__{ratio_str}__voxel{voxel_res}.pt"
+    filename = (
+        f"{model_id}__geom{geometry_sha256[:16]}__{ratio_str}__voxel{voxel_res}.pt"
+    )
     return os.path.join(cache_dir, filename)
 
 
@@ -259,7 +269,7 @@ def _voxel_scale_cache_path(
 # ---------------------------------------------------------------------------
 
 @dataclass
-class BlenderProcSceneDepthDatasetConfig:
+class InfinigenCompositeSceneDepthDatasetConfig:
     renderings_root: str = ""
     poses_dir: str = ""
     model_data_dir: str = ""
@@ -289,13 +299,17 @@ class BlenderProcSceneDepthDatasetConfig:
     # Depth source: {view_samples_dir}/{unique_id}/depth.npy
     # unique_id comes from preprocessed_view['id'] (e.g. "sceneid__floor_0__0")
     view_samples_dir: str = ""
+    # Optional immutable ERP-nearest depth overlay; never falls back when set.
+    depth_patch_root: str = ""
+    depth_patch_require_ready: bool = True
+    depth_resize_mode: str = "bilinear"
 
     with_mesh: bool = False
     use_bbox_layout: bool = False        # output canonical_bboxes when True
     num_samples_per_dim: int = 8         # unused (kept for config compat)
     skip_exists_check: bool = False      # skip os.path.exists per h5 (fast on slow NFS)
     canonicalize_azimuth: bool = False   # rotate canonical quantities so camera faces front
-    voxel_cache_dir: str = ""            # disk cache for scale-aware voxelization results
+    voxel_cache_dir: str = ""            # disk cache keyed by geometry hash, scale and resolution
 
     # scale fields kept for config compat but NOT applied to canonical maps
     moge_scale_info_dir: str = ""
@@ -309,7 +323,7 @@ class BlenderProcSceneDepthDatasetConfig:
 # Dataset
 # ---------------------------------------------------------------------------
 
-class BlenderProcSceneDepthDataset(Dataset):
+class InfinigenCompositeSceneDepthDataset(Dataset):
     """
     BlenderProc scene dataset that outputs canonical_coord_map instead of
     latent_voxel_centers / latent_voxel_cam_pts.
@@ -331,15 +345,37 @@ class BlenderProcSceneDepthDataset(Dataset):
 
     def __init__(self, split: str = "train", **kwargs) -> None:
         super().__init__()
-        self.cfg: BlenderProcSceneDepthDatasetConfig = parse_structured(
-            BlenderProcSceneDepthDatasetConfig, kwargs
+        self.cfg: InfinigenCompositeSceneDepthDatasetConfig = parse_structured(
+            InfinigenCompositeSceneDepthDatasetConfig, kwargs
         )
         if self.cfg.min_mask_area_ratio < 0:
             raise ValueError("min_mask_area_ratio must be >= 0")
         if self.cfg.min_mask_bbox_short_px < 0:
             raise ValueError("min_mask_bbox_short_px must be >= 0")
         if not self.cfg.preprocess_json_path:
-            raise ValueError("BlenderProcSceneDepthDataset requires preprocess_json_path.")
+            raise ValueError(
+                "InfinigenCompositeSceneDepthDataset requires preprocess_json_path."
+            )
+        if self.cfg.depth_resize_mode not in ("nearest", "bilinear"):
+            raise ValueError("depth_resize_mode must be nearest or bilinear")
+        if self.cfg.depth_patch_root:
+            if self.cfg.depth_resize_mode != "nearest":
+                raise ValueError("Reprojected depth requires nearest resize, aligned with masks")
+            marker = ".READY.json" if self.cfg.depth_patch_require_ready else "BUILD_COMPLETE.json"
+            marker_path = os.path.join(self.cfg.depth_patch_root, marker)
+            if not os.path.isfile(marker_path):
+                raise RuntimeError(f"Depth patch is not ready: {marker_path}")
+            with open(marker_path) as stream:
+                patch = json.load(stream)
+            with open(self.cfg.preprocess_json_path, "rb") as stream:
+                preprocess_hash = hashlib.sha256(stream.read()).hexdigest()
+            if (patch.get("processing_version") != "erp-nearest-depth-v2"
+                    or patch.get("preprocess_sha256") != preprocess_hash
+                    or os.path.realpath(patch.get("source_root", "") + "/renderings")
+                    != os.path.realpath(self.cfg.renderings_root)):
+                raise RuntimeError("Depth patch does not match the configured dataset/index")
+            if patch.get("failed_views", -1) != 0 or patch.get("completed_views") != patch.get("expected_views"):
+                raise RuntimeError("Depth patch is incomplete")
         random.seed(self.cfg.seed)
 
         if not self.cfg.poses_dir:
@@ -360,7 +396,7 @@ class BlenderProcSceneDepthDataset(Dataset):
         self.all_items = [self.all_items[i] for i in self._allowed_indices]
         unique_scenes = len({scene_id for scene_id, _ in self.all_items})
         print(
-            f"BlenderProcSceneDepthDataset: {len(self.all_items)} entries "
+            f"InfinigenCompositeSceneDepthDataset: {len(self.all_items)} entries "
             f"({unique_scenes} unique scenes, split={split})"
         )
 
@@ -383,6 +419,7 @@ class BlenderProcSceneDepthDataset(Dataset):
         )
         self._voxel_mem_cache: OrderedDict = OrderedDict()
         self._voxel_mem_cache_maxsize = 500
+        self._model_geometry_sha256_cache: Dict[str, Tuple[int, int, str]] = {}
 
         self.moge_scale_info_dir = self.cfg.moge_scale_info_dir or (
             os.path.join(self.cfg.renderings_root, "moge_output")
@@ -586,11 +623,61 @@ class BlenderProcSceneDepthDataset(Dataset):
         while len(self._voxel_mem_cache) > self._voxel_mem_cache_maxsize:
             self._voxel_mem_cache.popitem(last=False)
 
+    def _model_geometry_sha256(self, model_path: str) -> str:
+        """Hash one OBJ once per dataset process and refresh after a file change."""
+        stat = os.stat(model_path)
+        cached = self._model_geometry_sha256_cache.get(model_path)
+        if cached is not None and cached[:2] == (stat.st_size, stat.st_mtime_ns):
+            return cached[2]
+        digest = hashlib.sha256()
+        with open(model_path, "rb") as stream:
+            for block in iter(lambda: stream.read(8 << 20), b""):
+                digest.update(block)
+        value = digest.hexdigest()
+        self._model_geometry_sha256_cache[model_path] = (
+            stat.st_size,
+            stat.st_mtime_ns,
+            value,
+        )
+        return value
+
+    @staticmethod
+    def _valid_voxel_cache(
+        voxel_dict: Any, geometry_sha256: str, voxel_res: int
+    ) -> bool:
+        return bool(
+            isinstance(voxel_dict, dict)
+            and voxel_dict.get("source_obj_sha256") == geometry_sha256
+            and int(voxel_dict.get("voxel_res", -1)) == int(voxel_res)
+        )
+
     def _load_depth(self, unique_id: str) -> Optional[np.ndarray]:
         """
         Load depth.npy from {view_samples_dir}/{unique_id}/depth.npy.
         Returns (H, W) float32 or None if not found.
         """
+        if self.cfg.depth_patch_root:
+            if not unique_id or os.path.basename(unique_id) != unique_id:
+                raise RuntimeError(f"Invalid depth patch ID: {unique_id}")
+            view_dir = os.path.join(self.cfg.depth_patch_root, "view_samples", unique_id)
+            try:
+                with open(os.path.join(view_dir, "metadata.json")) as stream:
+                    metadata = json.load(stream)
+                with open(os.path.join(view_dir, "depth.npy"), "rb") as stream:
+                    payload = stream.read()
+                if hashlib.sha256(payload).hexdigest() != metadata.get("depth_sha256"):
+                    raise ValueError("Depth patch checksum mismatch")
+                arr = np.load(io.BytesIO(payload), allow_pickle=False)
+                if (metadata.get("id") != unique_id
+                        or metadata.get("processing_version") != "erp-nearest-depth-v2"
+                        or arr.dtype != np.float32 or arr.ndim != 2
+                        or list(arr.shape) != metadata.get("shape")):
+                    raise ValueError("Depth patch metadata/shape/dtype mismatch")
+                return arr
+            except (OSError, ValueError, KeyError, EOFError) as error:
+                # RuntimeError is intentional: do not retry a different training
+                # sample or silently fall back to the known-noisy old depth.
+                raise RuntimeError(f"Required repaired depth failed for {unique_id}: {error}") from error
         if not self.cfg.view_samples_dir:
             return None
         view_dir = os.path.join(self.cfg.view_samples_dir, unique_id)
@@ -876,6 +963,7 @@ class BlenderProcSceneDepthDataset(Dataset):
         mesh_to_world_list: List[np.ndarray] = []
         scale_vecs_list: List[np.ndarray] = []
         obj_keys_list: List[str] = []
+        geometry_sha256_list: List[str] = []
         models: List[trimesh.Trimesh] = []   # for with_mesh
         trimesh_scene_obj = trimesh.Scene()
         canonical_bboxes_list: List[torch.Tensor] = []
@@ -934,6 +1022,7 @@ class BlenderProcSceneDepthDataset(Dataset):
             mesh_to_world_list.append(mesh_to_world)
             scale_vecs_list.append(scale_vec)
             obj_keys_list.append(cand.key)
+            geometry_sha256_list.append(self._model_geometry_sha256(cand.model_path))
             models.append(raw_model)
             if self.cfg.use_bbox_layout:
                 canonical_bboxes_list.append(
@@ -976,6 +1065,10 @@ class BlenderProcSceneDepthDataset(Dataset):
             if torch.sum(mask_i > 0.5).item() <= 0:
                 continue
             try:
+                # Keep cropped RGB semantics consistent with the other scene
+                # dataloaders and inference preprocessing: crop the masked
+                # object image, while retaining the complete scene separately
+                # in ``rgb_scene``.
                 cropped_rgb_i, cropped_mask_i, _ = crop_around_mask(
                     part_images_t[inst_idx],
                     mask_i,
@@ -1003,6 +1096,7 @@ class BlenderProcSceneDepthDataset(Dataset):
         mesh_to_world_list = [mesh_to_world_list[i] for i in valid_indices]
         scale_vecs_list   = [scale_vecs_list[i] for i in valid_indices]
         obj_keys_list     = [obj_keys_list[i] for i in valid_indices]
+        geometry_sha256_list = [geometry_sha256_list[i] for i in valid_indices]
         models            = [models[i] for i in valid_indices]
         if canonical_bboxes_list:
             canonical_bboxes_list = [canonical_bboxes_list[i] for i in valid_indices]
@@ -1031,6 +1125,7 @@ class BlenderProcSceneDepthDataset(Dataset):
             mesh_to_world_list = [mesh_to_world_list[i] for i in selected]
             scale_vecs_list    = [scale_vecs_list[i] for i in selected]
             obj_keys_list      = [obj_keys_list[i] for i in selected]
+            geometry_sha256_list = [geometry_sha256_list[i] for i in selected]
             models             = [models[i] for i in selected]
             if canonical_bboxes_list:
                 canonical_bboxes_list = [canonical_bboxes_list[i] for i in selected]
@@ -1044,12 +1139,13 @@ class BlenderProcSceneDepthDataset(Dataset):
         if depth_raw is not None:
             H_raw, W_raw = depth_raw.shape
             if (H_raw, W_raw) != (H, W):
-                # Keep depth samples aligned with the nearest-resized instance
-                # segmentation. Bilinear interpolation would mix foreground,
-                # background, and occluding surfaces at depth discontinuities.
-                depth = cv2.resize(
-                    depth_raw, (W, H), interpolation=cv2.INTER_NEAREST
-                )
+                if self.cfg.depth_resize_mode == "nearest":
+                    depth = cv2.resize(depth_raw, (W, H), interpolation=cv2.INTER_NEAREST)
+                else:
+                    depth_pil = Image.fromarray(depth_raw, mode="F")
+                    depth = np.array(
+                        depth_pil.resize((W, H), resample=Image.BILINEAR), dtype=np.float32
+                    )
             else:
                 depth = depth_raw
         else:
@@ -1107,25 +1203,38 @@ class BlenderProcSceneDepthDataset(Dataset):
                 or obj_keys_list[i].split("|")[0]
             )
             scale_vec = scale_vecs_list[i]
+            geometry_sha256 = geometry_sha256_list[i]
 
             # Build cache key / path
             cache_path = (
                 _voxel_scale_cache_path(
-                    self.voxel_cache_dir, model_id, scale_vec, self.voxel_res
+                    self.voxel_cache_dir, model_id, scale_vec, self.voxel_res,
+                    geometry_sha256,
                 )
                 if self.voxel_cache_dir else ""
             )
 
             # ① memory cache hit
-            voxel_dict = self._voxel_mem_cache.get(cache_path)
-            if voxel_dict is not None and cache_path:
+            voxel_dict = self._voxel_mem_cache.get(cache_path) if cache_path else None
+            if voxel_dict is not None:
+                if not self._valid_voxel_cache(
+                    voxel_dict, geometry_sha256, self.voxel_res
+                ):
+                    raise RuntimeError(
+                        f"invalid in-memory voxel cache metadata: {cache_path}"
+                    )
                 self._voxel_mem_cache.move_to_end(cache_path)
 
             # ② disk cache hit
             if voxel_dict is None and cache_path and os.path.exists(cache_path):
                 try:
                     voxel_dict = torch.load(cache_path, map_location="cpu")
-                    self._voxel_mem_insert(cache_path, voxel_dict)
+                    if self._valid_voxel_cache(
+                        voxel_dict, geometry_sha256, self.voxel_res
+                    ):
+                        self._voxel_mem_insert(cache_path, voxel_dict)
+                    else:
+                        voxel_dict = None
                 except Exception:
                     voxel_dict = None
 
@@ -1135,13 +1244,16 @@ class BlenderProcSceneDepthDataset(Dataset):
                     voxel_models_list[i],
                     voxel_res=self.voxel_res,
                 )
+                voxel_dict["source_obj_sha256"] = geometry_sha256
+                voxel_dict["source_model_id"] = model_id
                 if cache_path:
                     os.makedirs(os.path.dirname(cache_path), exist_ok=True)
                     try:
                         torch.save(voxel_dict, cache_path)
                     except Exception:
                         pass
-                self._voxel_mem_insert(cache_path, voxel_dict)
+                if cache_path:
+                    self._voxel_mem_insert(cache_path, voxel_dict)
 
             voxel_list.append(gen_voxel_grid(voxel_dict))
 
@@ -1201,7 +1313,7 @@ class BlenderProcSceneDepthDataset(Dataset):
         pack: Dict[str, Any] = {
             "id":             data_id,
             "num_instances":  num_instances,
-            "rgb":            part_images_t,       # [N, 3, H, W]
+            "rgb":            part_images_t,       # [N, 3, H, W], not used!
             "mask":           masks_t,              # [N, 1, H, W]
             "masks":          masks_t,              # [N, 1, H, W]
             "rgb_scene":      scene_img_t,          # [N, 3, H, W]

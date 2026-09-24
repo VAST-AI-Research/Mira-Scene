@@ -17,12 +17,13 @@ from torchvision import transforms
 from einops import rearrange
 import os
 import PIL
+import PIL.Image
 import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from UniDataset.utils.pcd_utils import voxels_to_pcd
 from UniDataset.utils.pcd_utils import (
+    voxels_to_pcd,
     compute_similarity_transform,
     generate_uniform_voxel_centers,
     sample_points_from_bbox,
@@ -296,6 +297,29 @@ class DataProcessor:
                 device=canonical_coord_map_cropped.device,
             )
 
+        required_keys = ("top", "left", "bottom", "right", "orig_h", "orig_w")
+        missing_keys = [key for key in required_keys if key not in crop_params]
+        if missing_keys:
+            raise KeyError(
+                f"crop_params is missing required keys for CCM restoration: {missing_keys}"
+            )
+        for key in required_keys:
+            if crop_params[key].numel() != num_maps:
+                raise ValueError(
+                    f"crop_params['{key}'] contains {crop_params[key].numel()} "
+                    f"entries, but {num_maps} CCM maps were provided."
+                )
+
+        output_sizes = {
+            (int(crop_params["orig_h"][idx].item()), int(crop_params["orig_w"][idx].item()))
+            for idx in range(num_maps)
+        }
+        if len(output_sizes) != 1:
+            raise ValueError(
+                "All CCMs in one tensor must restore to the same full-image size; "
+                f"got {sorted(output_sizes)}."
+            )
+
         restored = []
         for idx in range(num_maps):
             top = int(crop_params["top"][idx].item())
@@ -305,6 +329,13 @@ class DataProcessor:
             orig_h = int(crop_params["orig_h"][idx].item())
             orig_w = int(crop_params["orig_w"][idx].item())
 
+            if not (0 <= top < bottom <= orig_h and 0 <= left < right <= orig_w):
+                raise ValueError(
+                    "Invalid crop box for CCM restoration: "
+                    f"(top={top}, left={left}, bottom={bottom}, right={right}) "
+                    f"for full image ({orig_h}, {orig_w})."
+                )
+
             crop_h = max(bottom - top, 1)
             crop_w = max(right - left, 1)
 
@@ -313,6 +344,8 @@ class DataProcessor:
             pw   = int(crop_params["pad_w"][idx].item())       if "pad_w"       in crop_params else 0
             ph_e = int(crop_params["pad_h_extra"][idx].item()) if "pad_h_extra" in crop_params else 0
             pw_e = int(crop_params["pad_w_extra"][idx].item()) if "pad_w_extra" in crop_params else 0
+            if min(ph, pw, ph_e, pw_e) < 0:
+                raise ValueError("CCM crop padding values must be non-negative.")
 
             restored_map = canonical_coord_map_cropped.new_zeros(
                 canonical_coord_map_cropped.shape[1], orig_h, orig_w
@@ -322,6 +355,11 @@ class DataProcessor:
             if has_padding:
                 # Reverse: resize to padded square -> strip padding -> paste
                 sq = crop_h + ph + ph_e  # == crop_w + pw + pw_e
+                if sq != crop_w + pw + pw_e:
+                    raise ValueError(
+                        "Inconsistent pad-to-square crop metadata: "
+                        f"height gives {sq}, width gives {crop_w + pw + pw_e}."
+                    )
                 resized_sq = F.interpolate(
                     canonical_coord_map_cropped[idx : idx + 1],
                     size=(sq, sq),
@@ -448,53 +486,102 @@ class DataProcessor:
     # ------------------------------------------------------------------
 
     @torch.no_grad()
-    def visualization_train(self, batch, save_dir="./debug_inference", voxel_res=64):
+    def visualization_train(
+        self, batch, save_dir="./debug_inference", voxel_res=64, rank=None
+    ):
+        """Save a compact visual audit of all image/layout conditions.
+
+        The processed training batch is flattened to ``[B*NI, ...]``.  Each
+        row in ``train_vis.png`` therefore corresponds to one object
+        instance and contains, from left to right:
+
+        ``image | mask | image_cropped | mask_cropped |
+        image_cropped_masked | canonical_coord_map``.
+
+        ``ori_*`` tensors are used so ImageNet normalization is not visible in
+        the debug image.  The optional ``condition_mask*`` keys are supported
+        for processors that augment the masks; the current processor falls
+        back to its regular masks.
+        """
         os.makedirs(save_dir, exist_ok=True)
+        rank_suffix = f"_rank{int(rank)}" if rank is not None else ""
 
-        # ---- Voxel (first item only, unchanged) ----
-        voxel = batch["voxel"][0]
-        save_path = f"{save_dir}/voxel_0.ply"
-        coords_np = voxels_to_pcd(voxel[0], voxel_res=voxel_res).cpu().numpy()
-        utils3d.io.write_ply(save_path, coords_np)
+        # ---- Voxel (first item only) ----
+        voxel = batch.get("voxel")
+        if voxel is not None and voxel.shape[0] > 0:
+            save_path = f"{save_dir}/voxel_0{rank_suffix}.ply"
+            coords_np = voxels_to_pcd(
+                voxel[0, 0], voxel_res=voxel_res
+            ).cpu().numpy()
+            utils3d.io.write_ply(save_path, coords_np)
 
-        # ---- Build per-batch-item rows: [rgb | mask | ccm], stack vertically ----
+        # ---- Build per-instance condition rows ----
+        if "ori_image" not in batch or batch["ori_image"].shape[0] == 0:
+            return
+
+        def _rgb(value, index):
+            image = value[index].detach().float().cpu().numpy()
+            image = image.transpose(1, 2, 0).clip(0, 1)
+            return (image * 255.0).astype(np.uint8)
+
+        def _mask(value, index):
+            mask = value[index, 0].detach().float().cpu().numpy()
+            mask = (mask.clip(0, 1) * 255.0).astype(np.uint8)
+            return np.stack([mask] * 3, axis=-1)
+
+        def _resize_rgb(image, target_h, target_w):
+            if image.shape[:2] == (target_h, target_w):
+                return image
+            return np.asarray(
+                PIL.Image.fromarray(image).resize(
+                    (target_w, target_h), PIL.Image.BILINEAR
+                )
+            )
+
         B = batch["ori_image"].shape[0]
         rows = []
         for b in range(B):
-            # RGB: [H, W, 3] uint8
-            rgb_np = (batch["ori_image"][b].float().cpu().numpy()
-                      .transpose(1, 2, 0) * 255).astype(np.uint8)
+            image = _rgb(batch["ori_image"], b)
+            mask = _mask(batch.get("condition_mask", batch["mask"]), b)
+            image_cropped = _rgb(batch["ori_image_cropped"], b)
+            mask_cropped = _mask(
+                batch.get("condition_mask_cropped", batch["mask_cropped"]), b
+            )
 
-            # Mask: grayscale -> [H, W, 3] uint8
-            mask_np = (batch["mask"][b, 0].float().cpu().numpy() * 255).astype(np.uint8)
-            mask_np = np.stack([mask_np] * 3, axis=-1)  # [H, W, 3]
+            # This is the exact object-focused image condition when the
+            # current processor has no separate augmented mask key.
+            cropped_mask_1ch = batch.get(
+                "condition_mask_cropped", batch["mask_cropped"]
+            )[b, :1].detach().float()
+            image_cropped_masked = (
+                batch["ori_image_cropped"][b].detach().float()
+                * cropped_mask_1ch
+            ).cpu().numpy().transpose(1, 2, 0).clip(0, 1)
+            image_cropped_masked = (image_cropped_masked * 255.0).astype(np.uint8)
 
-            parts = [rgb_np, mask_np]
+            parts = [image, mask, image_cropped, mask_cropped, image_cropped_masked]
+            target_h, target_w = image.shape[:2]
 
-            # CCM false-color (if available): [H, W, 3] uint8
-            if batch.get("canonical_coord_map") is not None:
-                ccm_b   = batch["canonical_coord_map"][b]           # [3, H, W]
-                pts_hw  = ccm_b.permute(1, 2, 0).float().cpu().numpy()  # [H, W, 3]
-                ccm_vis = np.clip(pts_hw, -0.5, 0.5)
-                ccm_vis = ((ccm_vis + 0.5) * 255.0).astype(np.uint8)
-                # Resize to match rgb height/width if needed
-                if ccm_vis.shape[:2] != rgb_np.shape[:2]:
-                    ccm_vis = np.array(PIL.Image.fromarray(ccm_vis).resize(
-                        (rgb_np.shape[1], rgb_np.shape[0]), PIL.Image.BILINEAR
-                    ))
-                parts.append(ccm_vis)
+            # CCM false-color: canonical coordinates [-0.5, 0.5] -> RGB.
+            ccm = batch.get("canonical_coord_map")
+            if ccm is not None:
+                ccm_hw = ccm[b].detach().float().cpu().permute(1, 2, 0).numpy()
+                ccm_vis = ((ccm_hw.clip(-0.5, 0.5) + 0.5) * 255.0).astype(np.uint8)
+                parts.append(_resize_rgb(ccm_vis, target_h, target_w))
 
-            rows.append(np.concatenate(parts, axis=1))  # [H, n*W, 3]
+            # Every tile must have the same height before horizontal concat.
+            parts = [_resize_rgb(part, target_h, target_w) for part in parts]
+            rows.append(np.concatenate(parts, axis=1))
 
-        # Pad rows to the same width before vertical stack
-        max_w = max(r.shape[1] for r in rows)
+        max_w = max(row.shape[1] for row in rows)
         padded = []
-        for r in rows:
-            if r.shape[1] < max_w:
-                pad = np.zeros((r.shape[0], max_w - r.shape[1], 3), dtype=np.uint8)
-                r = np.concatenate([r, pad], axis=1)
-            padded.append(r)
+        for row in rows:
+            if row.shape[1] < max_w:
+                pad = np.zeros(
+                    (row.shape[0], max_w - row.shape[1], 3), dtype=np.uint8
+                )
+                row = np.concatenate([row, pad], axis=1)
+            padded.append(row)
 
-        grid = np.concatenate(padded, axis=0)  # [B*H, n*W, 3]
-        PIL.Image.fromarray(grid).save(f"{save_dir}/train_vis.png")
-
+        grid = np.concatenate(padded, axis=0)
+        PIL.Image.fromarray(grid).save(f"{save_dir}/train_vis{rank_suffix}.png")

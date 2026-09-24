@@ -35,3 +35,8 @@ Thumbs.db
 !.env.example
 !.env.sample
 !.env.template
+
+# Local training configurations and generated outputs
+example_train/configs/*_local.yaml
+example_train/logs/
+example_train/outputs/

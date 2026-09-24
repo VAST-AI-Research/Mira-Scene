@@ -33,9 +33,23 @@ See the [evaluation guide](eval_scripts/docs/eval.md)
 Please refer to the [evaluation guide](eval_scripts/docs/eval.md)
 for details.
 
+## Training
+
+Training is organized into two stages:
+
+1. Pretraining with [`example_train/configs/pretrain_l1.yaml`](example_train/configs/pretrain_l1.yaml);
+2. Finetuning with [`example_train/configs/finetune.yaml`](example_train/configs/finetune.yaml).
+
+A pretrained Mira-CCM checkpoint is available from
+[Hugging Face](https://huggingface.co/Yang-Tian/Mira-Scene) and can be used
+directly for the second-stage finetuning.
+
+See the [training guide](example_train/README.md) for installation,
+configuration, checkpoint download, and launch instructions.
+
 ## ToDo
 
-- Release the training code & example training data.
+- Publish the concrete training data and corresponding download and preparation instructions.
 
 ## Citation
 

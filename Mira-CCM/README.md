@@ -70,11 +70,7 @@ voxel_pred = output.samples              # [B, 1, 64, 64, 64]
 
 ## Training
 
-```bash
-python -m miraccm.launch --config configs/pretrain.yaml --train
-
-# Multi-node (4 nodes × 8 GPUs)
-torchrun --nnodes=4 --nproc_per_node=8 --node_rank=0 \
-    --master_addr=<IP> --master_port=12357 \
-    -m miraccm.launch --config configs/pretrain.yaml --train trainer.num_nodes=4
-```
+Training is organized into two stages: pretraining and finetuning. The project
+also provides a released pretrain checkpoint that can be used directly for the
+second-stage finetuning. See the [training guide](../example_train/README.md)
+for installation, configuration, checkpoint, and launch instructions.

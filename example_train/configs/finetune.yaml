@@ -1,0 +1,259 @@
+name: ccm_voxel_scale
+tag: finetune
+exp_root_dir: "outputs"
+seed: 42
+
+# ---------------------------------------------------------------------------
+# Dataset anchors
+# ---------------------------------------------------------------------------
+anchors:
+  # 140k
+  3DFrontParam: &3DFrontParam
+    renderings_root: "/path/to/3dfront_min_furniture_count_2_varied_fov_10Apr"
+    poses_dir: ""
+    model_data_dir: "/path/to/3D-FUTURE/raw/3D-FUTURE-model"
+    cam_K_path: ""
+    preprocess_json_path: "/path/to/3dfront_min_furniture_count_2_varied_fov_processed_10Apr/train_scene_analysis.json"
+    moge_scale_info_dir: ""
+    view_samples_dir: "/path/to/3dfront_min_furniture_count_2_varied_fov_processed_10Apr/train/view_samples"
+    scene_id: ""
+    num_instances_per_batch: 1
+    height: 518
+    width: 518
+    debug: false
+    cache_scene_geometry: true
+    preprocessed_only_valid_views: true
+    skip_exists_check: true
+    with_mesh: false
+    use_bbox_layout: true
+    num_samples_per_dim: 16
+    use_global_scale: true
+    canonicalize_azimuth: true
+
+
+  # 98k  
+  3DFrontPano2Pesp: &3DFrontPano2Pesp
+    renderings_root: /path/to/3dfront_native1024_s32_no_merge_mira_repair_20260909_v1/training_combined_index_v1/renderings
+    poses_dir: /path/to/3dfront_native1024_s32_no_merge_mira_repair_20260909_v1/canonical_yup_fix_20260911_v1/poses
+    model_data_dir: /path/to/3dfront_native1024_s32_no_merge_mira_repair_20260909_v1/canonical_yup_fix_20260911_v1/models
+    cam_K_path: ''
+    preprocess_json_path: "/path/to/3dfront_native1024_s32_no_merge_mira_repair_20260909_v1/training_strict_border_bbox_20260915_v1/preprocess_train.json"
+    moge_scale_info_dir: ''
+    view_samples_dir: /path/to/3dfront_native1024_s32_no_merge_mira_repair_20260909_v1/training_combined_index_v1/view_samples
+    voxel_cache_dir: "/path/to/3dfront_native1024_s32_no_merge_mira_repair_20260909_v1/training_strict_border_bbox_20260915_v1/runtime/voxel_cache"
+    error_log_path: "/path/to/3dfront_native1024_s32_no_merge_mira_repair_20260909_v1/training_strict_border_bbox_20260915_v1/runtime/logs/loader_errors.log"
+    scene_id: ''
+    num_instances_per_batch: 1
+    height: 518
+    width: 518
+    seed: 905
+    repeat: 1
+    debug: false
+    cache_scene_geometry: true
+    preprocessed_only_valid_views: true
+    skip_exists_check: true
+    with_mesh: false
+    use_bbox_layout: true
+    num_samples_per_dim: 16
+    use_global_scale: true
+    canonicalize_azimuth: true
+    diagonal_azimuth_margin_deg: 15.0
+
+
+  # 51k 
+  InfinigenLegacyCompositeParam: &InfinigenLegacyCompositeParam
+    renderings_root: "/path/to/infinigen_v1_mira/native_perspective_1024_s32_no_merge_20260909_v1/training_no_mirror_v1/full/renderings"
+    poses_dir: "/path/to/infinigen_v1_mira/native_perspective_1024_s32_no_merge_20260909_v1/training_no_mirror_v1/full/poses"
+    model_data_dir: "/path/to/infinigen_v1_mira/native_perspective_1024_s32_no_merge_20260909_v1/preview_mask007_short32_20260911_v1/models"
+    cam_K_path: ""
+    preprocess_json_path: "/path/to/infinigen_v1_mira/native_perspective_1024_s32_no_merge_20260909_v1/training_strict_border_bbox_20260915_v1/preprocess_all.json"
+    moge_scale_info_dir: ""
+    view_samples_dir: "/path/to/infinigen_v1_mira/native_perspective_1024_s32_no_merge_20260909_v1/training_no_mirror_v1/full/view_samples"
+    depth_patch_root: ""
+    depth_patch_require_ready: true
+    depth_resize_mode: nearest
+    voxel_cache_dir: "/path/to/infinigen_v1_mira/native_perspective_1024_s32_no_merge_20260909_v1/training_strict_border_bbox_20260915_v1/runtime/voxel_cache"
+    scene_id: ""
+    num_instances_per_batch: 1
+    height: 518
+    width: 518
+    debug: false
+    cache_scene_geometry: true
+    preprocessed_only_valid_views: true
+    skip_exists_check: true
+    with_mesh: false
+    use_bbox_layout: true
+    num_samples_per_dim: 16
+    use_global_scale: true
+    canonicalize_azimuth: true
+
+  # 109k
+  ObjaverseParam65k: &ObjaverseParam65k
+    summary_json: "/path/to/objaverse_65k_outpaint_blank/align_summary_65k_with_mesh_tf.json"
+    valid_scenes_dir: "/path/to/objaverse_65k_outpaint_blank/valid_scenes"
+    height: 518
+    width: 518
+    voxel_res: 64
+    use_bbox_layout: true
+    skip_exists_check: true
+    canonicalize_azimuth: true
+
+
+
+# ---------------------------------------------------------------------------
+# Data — mix 3DFront + Objaverse for finetune
+# ---------------------------------------------------------------------------
+data:
+  target: miraccm.data.unidataset.UniDataModule
+  params:
+    dataset:
+      3DFront:
+        target: UniDataset.Scene.BlenderProcSceneDepthDataset
+        params:
+          <<: *3DFrontParam
+          num_instances_per_batch: 1
+          data_indices: [0, null]
+          repeat: 5
+
+      3DFrontPano2Pesp:
+        target: UniDataset.Scene.BlenderProcSceneDepthDataset
+        params:
+          <<: *3DFrontPano2Pesp
+          num_instances_per_batch: 1
+          data_indices: [0, null]
+          repeat: 5
+
+      InfinigenLegacyComposite:
+        target: UniDataset.Scene.infinigen_composite_scene_depth.InfinigenCompositeSceneDepthDataset
+        params:
+          <<: *InfinigenLegacyCompositeParam
+          data_indices: [0, null]
+          repeat: 5
+
+      objaverse65kOutpaint:
+        target: UniDataset.Scene.ObjaverseSceneDepthDataset
+        params:
+          <<: *ObjaverseParam65k
+          data_indices: [0, null]
+          repeat: 2
+
+    val_dataset:
+      blendswap_eval:
+        target: UniDataset.Scene.EvalDataset
+        params:
+          eval_dir: "/path/to/eval_data/blendswap_eval"
+          height: 518
+          width: 518
+          voxel_res: 64
+
+    batch_size: 4
+    eval_batch_size: 1
+    num_workers: 8
+
+    batch_sampler: False
+    shuffle_train: True
+
+# ---------------------------------------------------------------------------
+# System
+# ---------------------------------------------------------------------------
+system:
+  target: miraccm.systems.shape_synthesis.system_ccm_voxel.CCMVoxelDiTSystem
+  params:
+    check_train_every_n_steps: 100
+    cleanup_after_validation_step: true
+    cleanup_after_test_step: true
+
+    # Model — finetune from pretrained pipeline (weights only, no optimizer/scheduler restore)
+    pretrained_model_name_or_path: /path/to/outputs/ccm_voxel_scale/pretrain_l1_cosine/pipeline
+    init_layout_from_shape: false
+
+    # Experiment
+    layout_ccm_resolution: 296
+    use_cascaded_layout: true
+    keep_layout_condition_in_uncond: true
+    use_cropped_condition: true
+
+    # Loss
+    layout_loss_type: mse
+    layout_masked_loss: true
+
+    # Latent config
+    latent_config:
+      shape:
+        in_channels: 8
+        model_channels: 1024
+        pos_embedder:
+          type: ShapePositionEmbedder
+          model_channels: 1024
+          patch_size: 1
+          resolution: 16
+      layout:
+        in_channels: 3
+        model_channels: 1024
+        pos_embedder:
+          type: AbsolutePositionEmbedder2D
+          model_channels: 1024
+          resolution: 296
+          patch_size: 8
+
+    # Training
+    trainable_modules: []
+    gradient_checkpointing: true
+    weighting_scheme: logit_normal
+    loss_weight_shape: 1.0
+    loss_weight_layout: 1.0
+
+    optimizer_lr_shape: 1e-4
+    optimizer_lr_layout: 1e-4
+
+    resolution: 64
+
+    # Condition
+    text_drop_prob: 0.1
+
+    # Evaluation
+    eval_seed: 42
+    eval_num_inference_steps: 30
+    eval_guidance_scale: 3.0
+    best_metric: val/ccm_to_gt_voxel_cd
+    best_metric_mode: min
+
+    # Optimizer
+    optimizer:
+      name: AdamW
+      args:
+        lr: 1e-4
+        betas: [0.9, 0.999]
+        weight_decay: 0.0
+
+    # Scheduler: linear decay to 0.5x over 200K steps
+    scheduler:
+      name: SequentialLR
+      interval: step
+      milestones: [200000]
+      schedulers:
+        - name: LinearLR
+          args:
+            start_factor: 1.0
+            end_factor: 0.5
+            total_iters: 200000
+        - name: ConstantLR
+          args:
+            factor: 0.5
+            total_iters: 9999999
+
+trainer:
+  max_steps: 200000
+  log_every_n_steps: 10
+  num_sanity_val_steps: 16
+  val_check_interval: 4000
+  enable_progress_bar: true
+  precision: bf16-mixed
+  gradient_clip_val: 1.0
+  strategy: ddp
+  accumulate_grad_batches: 1
+
+checkpoint:
+  save_last: True
+  save_top_k: -1
+  every_n_epochs: 9999

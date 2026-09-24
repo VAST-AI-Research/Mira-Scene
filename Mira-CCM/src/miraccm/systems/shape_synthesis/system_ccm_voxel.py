@@ -39,15 +39,19 @@ from ..base import BaseSystem
 
 from ...utils.image_utils.segment import masks2idmap
 import trimesh
-from UniDataset.utils.pcd_utils import voxels_to_pcd, transform_pcd_simple
+from UniDataset.utils.pcd_utils import (
+    compute_similarity_transform,
+    transform_pcd_simple,
+    voxels_to_pcd,
+)
 
-# Shared utilities from scripts/utils/
-import sys as _sys
-_scripts_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../../../scripts"))
-if _scripts_dir not in _sys.path:
-    _sys.path.insert(0, _scripts_dir)
-from utils.metrics import chamfer_distance_numpy, voxel_iou_batch, ccm_mse_masked_batch, ccm_l1_masked_batch
-from utils.save_outputs import save_ccm_outputs
+from miraccm.utils.metrics import (
+    chamfer_distance_numpy,
+    ccm_mse_masked_batch,
+    ccm_l1_masked_batch,
+    one_way_chamfer_distance_numpy,
+)
+from miraccm.utils.save_outputs import save_ccm_outputs
 
 
 class CCMVoxelDiTSystem(BaseSystem):
@@ -89,16 +93,20 @@ class CCMVoxelDiTSystem(BaseSystem):
         # When True, whole-condition dropout keeps layout-specific conditions
         # (layout image/mask tokens, layout concat inputs)
         # active so the layout branch stays conditioned during training.
-        keep_layout_condition_in_uncond: bool = False
+        keep_layout_condition_in_uncond: bool = True
 
         # Evaluation
         eval_seed: int = 42
         eval_num_inference_steps: int = 50
         eval_guidance_scale: float = 6.0
+        # Deterministically cap the dense CCM correspondences used by Sim(3)
+        # fitting so validation memory/time does not scale with image area.
+        metric_alignment_max_points: int = 20000
 
         # Best model tracking: save pipeline_best when this metric improves
-        # Options: "val/chamfer_distance", "val/ccm_mse", "val/ccm_l1"
-        best_metric: str = "val/chamfer_distance"
+        # Options: "val/ccm_to_gt_voxel_cd", "val/chamfer_distance",
+        # "val/ccm_mse", "val/ccm_l1"
+        best_metric: str = "val/ccm_to_gt_voxel_cd"
         best_metric_mode: str = "min"  # "min" or "max"
 
         latent_config: Dict[str, Any] = field(default_factory=dict)
@@ -115,13 +123,13 @@ class CCMVoxelDiTSystem(BaseSystem):
         #   4. Second-half blocks at fine resolution
         #   5. FinalLayerLayout (adaLN) + unpatchify with patch_size // 2
         # Requires layout patch_size >= 2.
-        use_cascaded_layout: bool = False
+        use_cascaded_layout: bool = True
 
         # When True, DataProcessor.prepare_condition_info uses cropped images
         # (rgb_cropped, mask_cropped, canonical_coord_map_cropped) in place of
         # the scene-level fields (image, mask, canonical_coord_map) and sets
         # fov to None.
-        use_cropped_condition: bool = False
+        use_cropped_condition: bool = True
 
         # When True, initialize layout branch from pretrained shape weights
         # (xavier new modules + copy shape → layout). Set to False when resuming
@@ -135,6 +143,19 @@ class CCMVoxelDiTSystem(BaseSystem):
     # ------------------------------------------------------------------
 
     def configure(self):
+        # The current layout implementation and its validation coordinate
+        # conventions are defined for the cascaded, crop-aligned path.  Fail
+        # early when an incompatible configuration is supplied instead of
+        # silently training/evaluating a different conditioning graph.
+        assert self.cfg.keep_layout_condition_in_uncond is True, (
+            "CCMVoxelDiTSystem requires keep_layout_condition_in_uncond=True."
+        )
+        assert self.cfg.use_cascaded_layout is True, (
+            "CCMVoxelDiTSystem requires use_cascaded_layout=True."
+        )
+        assert self.cfg.use_cropped_condition is True, (
+            "CCMVoxelDiTSystem requires use_cropped_condition=True."
+        )
         super().configure()
         # Best metric tracking
         self._best_metric_value = float("inf") if self.cfg.best_metric_mode == "min" else float("-inf")
@@ -589,11 +610,14 @@ class CCMVoxelDiTSystem(BaseSystem):
 
     def on_validation_epoch_end(self):
         """Check if current val metric is best, save pipeline_best if so."""
-        if self.global_rank != 0:
+        # Sanity validation is only a smoke test; it must not replace a real
+        # best checkpoint before training starts.
+        if self.trainer.sanity_checking:
             return
 
         metric_key = self.cfg.best_metric
-        # Retrieve logged metric value from trainer
+        # All ranks read the synchronized epoch metric before rank zero is
+        # allowed to write.  This keeps the hook order identical under DDP.
         callback_metrics = self.trainer.callback_metrics
         if metric_key not in callback_metrics:
             return
@@ -608,14 +632,20 @@ class CCMVoxelDiTSystem(BaseSystem):
         )
 
         if is_better:
+            # Keep the comparison state identical on every rank.  Only the
+            # actual filesystem write is restricted to rank zero.
             self._best_metric_value = current_value
-            save_dir = os.path.join(os.path.dirname(self.get_save_dir()), "pipeline_best")
-            os.makedirs(save_dir, exist_ok=True)
-            self.pipeline.save_pretrained(save_dir)
-            info(
-                f"New best {metric_key}={current_value:.6f} at step {self.true_global_step}. "
-                f"Saved pipeline_best."
-            )
+            if self.global_rank == 0:
+                save_dir = os.path.join(os.path.dirname(self.get_save_dir()), "pipeline_best")
+                os.makedirs(save_dir, exist_ok=True)
+                self.pipeline.save_pretrained(save_dir)
+                info(
+                    f"New best {metric_key}={current_value:.6f} at step {self.true_global_step}. "
+                    f"Saved pipeline_best."
+                )
+            # Do not let the other ranks enter the next train epoch while rank
+            # zero is still serializing the pipeline.
+            self.trainer.strategy.barrier("pipeline_best_save")
 
     # ------------------------------------------------------------------
     # inference
@@ -685,6 +715,16 @@ class CCMVoxelDiTSystem(BaseSystem):
         """Validation using EvalDataset: same preprocessing as inference_CCM.py + metrics + save."""
         device = self.device
 
+        # Keep one case-level value per metric and log each key exactly once
+        # after the loop.  This is important in DDP: every rank must enter the
+        # same sync_dist collectives in the same order.
+        step_metrics: Dict[str, List[float]] = {
+            "val/ccm_mse": [],
+            "val/ccm_l1": [],
+            "val/chamfer_distance": [],
+            "val/ccm_to_gt_voxel_cd": [],
+        }
+
         for case_idx, case in enumerate(batch):
             image = case["image"]       # [H, W, 3] numpy float32
             masks = case["masks"]       # list of [H, W] numpy float32
@@ -708,65 +748,178 @@ class CCMVoxelDiTSystem(BaseSystem):
             output = self.inference(inp)
 
             # --- Metrics ---
-            _mask_src = inp["mask_cropped_1ch"] if self.cfg.use_cropped_condition else inp["mask_1ch"]
+            crop_mask = inp["mask_cropped_1ch"]
             H, W = inp['ori_image'].shape[-2:]
 
             ccm_pred = output["canonical_coord_map_pred"]  # [NI, 3, H', W']
             ccm_h, ccm_w = ccm_pred.shape[-2:]
 
-            # Mask CCM outside instance mask
-            mask_for_ccm = F.interpolate(_mask_src.float(), size=(ccm_h, ccm_w), mode="nearest")
+            # The layout branch predicts on the cropped canvas.  Keep these
+            # crop-space tensors for the existing output visualization path.
+            mask_for_ccm = F.interpolate(
+                crop_mask.float(), size=(ccm_h, ccm_w), mode="nearest"
+            )
             ccm_pred_masked = ccm_pred * (mask_for_ccm > 0.5).to(ccm_pred.dtype)
 
-            # Upsample to image resolution
-            ccm_upsampled = F.interpolate(
+            # Upsample only within the crop canvas.  The next step explicitly
+            # inverts crop/pad/resize to obtain a scene-level CCM.
+            ccm_crop_full_res = F.interpolate(
                 ccm_pred_masked.float(), size=(H, W), mode="bilinear", align_corners=False,
-            ).clamp(-0.5, 0.5)
-            ccm_upsampled = ccm_upsampled * (
-                F.interpolate(_mask_src.float(), size=(H, W), mode="nearest") > 0.5
+            )
+            ccm_crop_full_res = ccm_crop_full_res * (
+                F.interpolate(crop_mask.float(), size=(H, W), mode="nearest") > 0.5
             ).float()
+            # Keep clipping as an output-visualization convention only.  A
+            # clamp before Sim(3) fitting would destroy a valid global scale
+            # discrepancy and bias both the fitted transform and metrics.
+            ccm_upsampled = ccm_crop_full_res.clamp(-0.5, 0.5)
 
-            # CCM MSE (masked) — average over all instances
-            mask_1ch = _mask_src
-            ccm_pred_for_mse = F.interpolate(
-                ccm_pred.float(), size=(H, W), mode='bilinear', align_corners=False,
+            # Compare prediction and GT only after both have been expressed in
+            # full-image pixel coordinates.  This fixes the previous crop CCM
+            # versus full-image GT mismatch.
+            ccm_pred_full = self.data_processor.restore_canonical_coord_map(
+                canonical_coord_map_cropped=ccm_crop_full_res,
+                crop_params=inp["crop_params"],
             )
             ccm_gt_full = gt_ccm.float()
             if ccm_gt_full.shape[-2:] != (H, W):
                 ccm_gt_full = F.interpolate(
-                    ccm_gt_full, size=(H, W), mode='bilinear', align_corners=False,
+                    ccm_gt_full, size=(H, W), mode="nearest",
                 )
-            ccm_mse = ccm_mse_masked_batch(ccm_pred_for_mse, ccm_gt_full, mask_1ch)
-            self.log("val/ccm_mse", ccm_mse, prog_bar=True, batch_size=1)
+            mask_full = inp["mask_1ch"]
+            if mask_full.shape[-2:] != (H, W):
+                mask_full = F.interpolate(mask_full.float(), size=(H, W), mode="nearest")
 
-            # CCM L1 (masked)
-            ccm_l1 = ccm_l1_masked_batch(ccm_pred_for_mse, ccm_gt_full, mask_1ch)
-            self.log("val/ccm_l1", ccm_l1, prog_bar=True, batch_size=1)
+            # Use corresponding valid CCM pixels to estimate an independent
+            # prediction -> GT similarity transform for every instance.
+            alignments: List[Optional[Dict[str, Any]]] = []
+            ccm_pred_aligned = ccm_pred_full.clone()
+            for i in range(NI):
+                valid = mask_full[i, 0] > 0.5
+                valid = valid & torch.isfinite(ccm_gt_full[i]).all(dim=0)
+                valid = valid & torch.isfinite(ccm_pred_full[i]).all(dim=0)
+                # Zero is the background/invalid-depth sentinel in these CCMs.
+                valid = valid & (ccm_gt_full[i].abs().sum(dim=0) > 1e-6)
+                valid = valid & (ccm_pred_full[i].abs().sum(dim=0) > 1e-6)
+                pred_points = ccm_pred_full[i].permute(1, 2, 0)[valid]
+                gt_points = ccm_gt_full[i].permute(1, 2, 0)[valid]
+                transform = None
+                if pred_points.shape[0] >= 3:
+                    # Directly use UniDataset's shared implementation. It
+                    # estimates the prediction -> GT Sim(3) and returns R/t/s.
+                    max_points = max(int(self.cfg.metric_alignment_max_points), 3)
+                    if pred_points.shape[0] > max_points:
+                        indices = torch.linspace(
+                            0, pred_points.shape[0] - 1, max_points,
+                            device=pred_points.device,
+                        ).long()
+                        pred_points, gt_points = pred_points[indices], gt_points[indices]
+                    finite = torch.isfinite(pred_points).all(dim=1) & torch.isfinite(gt_points).all(dim=1)
+                    pred_points, gt_points = pred_points[finite], gt_points[finite]
+                    if pred_points.shape[0] >= 3:
+                        pred_centered = pred_points - pred_points.mean(dim=0, keepdim=True)
+                        gt_centered = gt_points - gt_points.mean(dim=0, keepdim=True)
+                        if (
+                            torch.linalg.vector_norm(pred_centered) > torch.finfo(torch.float32).eps
+                            and torch.linalg.vector_norm(gt_centered) > torch.finfo(torch.float32).eps
+                            and torch.linalg.matrix_rank(pred_centered) >= 2
+                            and torch.linalg.matrix_rank(gt_centered) >= 2
+                        ):
+                            try:
+                                transform = compute_similarity_transform(
+                                    pred_points.detach().float().cpu(),
+                                    gt_points.detach().float().cpu(),
+                                )
+                                if not all(torch.isfinite(torch.as_tensor(transform[k])).all() for k in ("R", "t", "s")):
+                                    transform = None
+                                elif float(torch.as_tensor(transform["s"]).item()) <= 0:
+                                    transform = None
+                            except (RuntimeError, ValueError):
+                                transform = None
+                alignments.append(transform)
+                if transform is not None:
+                    ccm_hwc = ccm_pred_full[i].permute(1, 2, 0)
+                    ccm_valid = torch.isfinite(ccm_hwc).all(dim=-1) & (
+                        ccm_hwc.abs().sum(dim=-1) > 1e-6
+                    )
+                    ccm_points = ccm_hwc[ccm_valid].detach().float().cpu().numpy()
+                    ccm_points = transform_pcd_simple(transform, ccm_points)
+                    aligned_hwc = ccm_pred_aligned[i].permute(1, 2, 0).clone()
+                    aligned_hwc[ccm_valid] = torch.as_tensor(
+                        ccm_points, device=aligned_hwc.device, dtype=aligned_hwc.dtype
+                    )
+                    ccm_pred_aligned[i] = aligned_hwc.permute(2, 0, 1)
 
-            # Voxel IoU — average over all instances
+            # If a particular Sim(3) cannot be estimated, its restored
+            # full-image CCM remains in the CCM metric rather than comparing a
+            # crop canvas to GT.  Its voxel CD is skipped below.
+            ccm_mse = ccm_mse_masked_batch(
+                ccm_pred_aligned, ccm_gt_full, mask_full
+            )
+            if np.isfinite(ccm_mse):
+                step_metrics["val/ccm_mse"].append(float(ccm_mse))
+            ccm_l1 = ccm_l1_masked_batch(
+                ccm_pred_aligned, ccm_gt_full, mask_full
+            )
+            if np.isfinite(ccm_l1):
+                step_metrics["val/ccm_l1"].append(float(ccm_l1))
+
+            # GT occupancy is converted to voxel-center points for CD.  Raw
+            # voxel IoU is deliberately removed because the two grids may be
+            # related by the CCM-derived Sim(3), not index-aligned.
             gt_voxel = gt["voxel"].to(device)
             if gt_voxel.dim() == 3:
                 gt_voxel = gt_voxel.unsqueeze(0)  # [1, R, R, R]
             gt_voxel = gt_voxel.unsqueeze(1)  # [NI, 1, R, R, R]
             if gt_voxel.shape[0] < NI:
                 gt_voxel = gt_voxel[:1].expand(NI, -1, -1, -1, -1)
-            voxel_iou = voxel_iou_batch(output["voxel_pred"], gt_voxel)
-            self.log("val/voxel_iou", voxel_iou, prog_bar=True, batch_size=1)
 
-            # PCD Chamfer Distance — average over all instances
+            # PCD Chamfer Distance after applying exactly the Sim(3) estimated
+            # from the corresponding CCM.  Never fall back to an unaligned CD.
             voxel_res = gt_voxel.shape[-1]
             cd_list = []
+            ccm_to_gt_voxel_cd_list = []
             for i in range(NI):
                 gt_pcd_i = voxels_to_pcd(
                     gt_voxel[i, 0], voxel_res=voxel_res, min_bound=-0.5, max_bound=0.5,
                 ).cpu().numpy()
+
+                # One-way visible-surface consistency: aligned predicted CCM
+                # points -> complete GT voxel-center cloud. This intentionally
+                # does not penalize invisible GT surfaces absent from CCM.
+                ccm_valid_i = (mask_full[i, 0] > 0.5) & (
+                    ccm_pred_full[i].abs().sum(dim=0) > 1e-6
+                )
+                ccm_pcd_i = (
+                    ccm_pred_aligned[i].permute(1, 2, 0)[ccm_valid_i]
+                    .detach().float().cpu().numpy()
+                )
+                if ccm_pcd_i.shape[0] > int(self.cfg.metric_alignment_max_points):
+                    ccm_sel = np.linspace(
+                        0, ccm_pcd_i.shape[0] - 1,
+                        int(self.cfg.metric_alignment_max_points),
+                        dtype=np.int64,
+                    )
+                    ccm_pcd_i = ccm_pcd_i[ccm_sel]
+                ccm_to_voxel_i = one_way_chamfer_distance_numpy(
+                    ccm_pcd_i, gt_pcd_i
+                )
+                if np.isfinite(ccm_to_voxel_i):
+                    ccm_to_gt_voxel_cd_list.append(float(ccm_to_voxel_i))
+
+                if alignments[i] is None:
+                    continue
                 pred_pcd_i = output["canonical_pcds"][i] if i < len(output["canonical_pcds"]) else np.zeros((0, 3))
+                pred_pcd_i = transform_pcd_simple(alignments[i], pred_pcd_i)
                 cd_i = chamfer_distance_numpy(pred_pcd_i, gt_pcd_i)
-                if not np.isnan(cd_i):
-                    cd_list.append(cd_i)
+                if np.isfinite(cd_i):
+                    cd_list.append(float(cd_i))
             if cd_list:
-                cd = float(np.mean(cd_list))
-                self.log("val/chamfer_distance", cd, prog_bar=True, batch_size=1)
+                step_metrics["val/chamfer_distance"].append(float(np.mean(cd_list)))
+            if ccm_to_gt_voxel_cd_list:
+                step_metrics["val/ccm_to_gt_voxel_cd"].append(
+                    float(np.mean(ccm_to_gt_voxel_cd_list))
+                )
 
             # --- Save results (same function as inference_CCM.py) ---
             save_dir = self.get_save_path(
@@ -781,6 +934,28 @@ class CCMVoxelDiTSystem(BaseSystem):
                 voxel_coords=output["voxel_coords"],
                 use_cropped_condition=self.cfg.use_cropped_condition,
                 data_processor=self.data_processor,
+            )
+
+        # Every rank registers every metric exactly once.  The local mean is
+        # weighted by its number of valid cases, so sync_dist computes the
+        # global case-level mean even when some ranks have no valid CD.
+        for metric_name in (
+            "val/ccm_mse",
+            "val/ccm_l1",
+            "val/chamfer_distance",
+            "val/ccm_to_gt_voxel_cd",
+        ):
+            values = step_metrics[metric_name]
+            local_count = len(values)
+            local_mean = float(np.mean(values)) if values else 0.0
+            self.log(
+                metric_name,
+                local_mean,
+                prog_bar=True,
+                on_step=False,
+                on_epoch=True,
+                sync_dist=True,
+                batch_size=local_count,
             )
 
     def test_step(self, batch, batch_idx):
