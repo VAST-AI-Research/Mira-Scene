@@ -77,9 +77,14 @@ torchrun --nnodes=4 --nproc_per_node=8 --node_rank=0 \
 ## Training data
 
 The configuration files refer to the prepared training datasets used by the
-project. The data preparation and release instructions will be added later.
+project. For the Outpaint and 3D-FRONT archive format, download instructions, extraction
+tools and sample loading checks, see the [HF dataset guide](../hf_release/README.md).
+The companion tools live in [`hf_release/data_tools`](../hf_release/data_tools/README.md).
+Keep FRONT first when mixing these sources so its collator handles their metadata.
+This two-source release does not include every dataset referenced by the training
+configuration.
 
 **TODO**
 
-- [ ] Publish the concrete training data and corresponding download and
-      preparation instructions.
+- [ ] Publish the Hugging Face dataset repository and record its identifier and
+      the corresponding code revision in the release metadata.

@@ -1,0 +1,21 @@
+{
+  "commit_locator": "The dataset's manifests/code_compatibility.json records the published commit.",
+  "dataset_release": "mira-scene-outpaint-front-v1",
+  "files_sha256": {
+    ".gitignore": "6feaded4e28ea86e001a6751b4e3d960e8b7c31b9616ff9936b79297086e809b",
+    "README.md": "646eef9f86d19229a8f6d2014bf5f8d77dd57e65a2890bd44481ef4c0901b01f",
+    "configs/datasets.json": "a4aac9e96804f5b70cd9d78d66efd45719f6b5b8cdf72546bed09dac8b41186f",
+    "requirements.txt": "ca083b1c28f9d3289098d4efa4b7fe50efb6f8a60a4e2b41e5db7783b4d976e4",
+    "tests/test_extract.py": "b35167f2ed382ec0237a3da52d3af2d8a26127fea42924da43063d51a218dd22",
+    "tools/check_samples.py": "4200648a20d1e311016d440be7da76a8b250eceb129f8f2a618b039e4e95f0f7",
+    "tools/extract.py": "70b84645ea233a15031fb71171a37d7b374e7959e5daba6498ba834d0f1b7e9b",
+    "tools/extract_sample.py": "23df4c514d9e79268a7065843de988bcdae0101bce9e0649c01d3b95ea923e3a",
+    "tools/load_dataset.py": "719c33bb2f89c55289e83b6f08fc46a26ced441afe8be7d5400cce7e85426866"
+  },
+  "format_version": 1,
+  "github_commit": null,
+  "github_repository": "https://github.com/VAST-AI-Research/Mira-Scene",
+  "github_subdirectory": "hf_release/data_tools",
+  "loader_source": "UniDataset/src in the same Mira-Scene checkout",
+  "source_bundle_code_version_sha256": "9ee450a866ed914716d01ba02c61209f700b8443d9d5d1557517d6a724ef07b6"
+}
