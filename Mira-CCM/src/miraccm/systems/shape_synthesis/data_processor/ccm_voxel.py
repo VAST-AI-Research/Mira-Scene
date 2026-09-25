@@ -29,7 +29,6 @@ from UniDataset.utils.pcd_utils import (
     sample_points_from_bbox,
     compute_similarity_transform_from_bbox,
 )
-import utils3d
 from miraccm.utils.image_utils.segment import masks2idmap
 from miraccm.utils.system_utils.logging import debug, info, warn
 import trimesh
@@ -513,7 +512,7 @@ class DataProcessor:
             coords_np = voxels_to_pcd(
                 voxel[0, 0], voxel_res=voxel_res
             ).cpu().numpy()
-            utils3d.io.write_ply(save_path, coords_np)
+            trimesh.PointCloud(coords_np).export(save_path, file_type="ply")
 
         # ---- Build per-instance condition rows ----
         if "ori_image" not in batch or batch["ori_image"].shape[0] == 0:
