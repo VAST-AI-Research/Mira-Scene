@@ -3,7 +3,7 @@
   "dataset_release": "mira-scene-outpaint-front-v1",
   "files_sha256": {
     ".gitignore": "6feaded4e28ea86e001a6751b4e3d960e8b7c31b9616ff9936b79297086e809b",
-    "README.md": "646eef9f86d19229a8f6d2014bf5f8d77dd57e65a2890bd44481ef4c0901b01f",
+    "README.md": "e255135dee8b96e6c2c59304dee538452220e8c9eaaea88d05f60207e393ed45",
     "configs/datasets.json": "a4aac9e96804f5b70cd9d78d66efd45719f6b5b8cdf72546bed09dac8b41186f",
     "requirements.txt": "ca083b1c28f9d3289098d4efa4b7fe50efb6f8a60a4e2b41e5db7783b4d976e4",
     "tests/test_extract.py": "b35167f2ed382ec0237a3da52d3af2d8a26127fea42924da43063d51a218dd22",
