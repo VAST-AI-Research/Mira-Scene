@@ -14,7 +14,6 @@ import PIL
 import PIL.Image
 import torch
 import torch.nn.functional as F
-import utils3d
 from diffusers.training_utils import (
     compute_density_for_timestep_sampling,
     compute_loss_weighting_for_sd3,
