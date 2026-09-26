@@ -76,15 +76,46 @@ torchrun --nnodes=4 --nproc_per_node=8 --node_rank=0 \
 
 ## Training data
 
-The configuration files refer to the prepared training datasets used by the
-project. For the Outpaint and 3D-FRONT archive format, download instructions, extraction
-tools and sample loading checks, see the [HF dataset guide](../hf_release/README.md).
-The companion tools live in [`hf_release/data_tools`](../hf_release/data_tools/README.md).
-Keep FRONT first when mixing these sources so its collator handles their metadata.
-This two-source release does not include every dataset referenced by the training
-configuration.
+The Outpaint and 3D-FRONT training archives are being released in
+[Yang-Tian/Mira-Scene-Dataset](https://huggingface.co/datasets/Yang-Tian/Mira-Scene-Dataset)
+alongside the BlendSwap evaluation set. See the dataset card for availability.
+After downloading the training archives, extract them in place (bash):
 
-**TODO**
+```bash
+export DATA_ROOT="/absolute/path/to/mira-scene-data"
+for f in "$DATA_ROOT"/{3dfront,objaverse_outpaint}/shards/*.tar.gz; do tar -xzf "$f" -C "$DATA_ROOT" || exit 1; done
+```
 
-- [ ] Publish the Hugging Face dataset repository and record its identifier and
-      the corresponding code revision in the release metadata.
+The package includes Outpaint's ready-to-use `summary.json`. In
+`configs/finetune.yaml`, update these anchors, replacing `DATA_ROOT` below
+with the actual absolute path.
+
+| Anchor | Parameter | Path |
+| --- | --- | --- |
+| `3DFrontPano2Pesp` | `renderings_root` | `DATA_ROOT/3dfront/renderings` |
+| `3DFrontPano2Pesp` | `view_samples_dir` | `DATA_ROOT/3dfront/view_samples` |
+| `3DFrontPano2Pesp` | `poses_dir` | `DATA_ROOT/3dfront/poses` |
+| `3DFrontPano2Pesp` | `model_data_dir` | `DATA_ROOT/3dfront/models` |
+| `3DFrontPano2Pesp` | `preprocess_json_path` | `DATA_ROOT/3dfront/preprocess_train.json` |
+| `3DFrontPano2Pesp` | `voxel_cache_dir` | `DATA_ROOT/.runtime/3dfront/voxels` |
+| `3DFrontPano2Pesp` | `error_log_path` | `DATA_ROOT/.runtime/3dfront/errors.log` |
+| `ObjaverseParam65k` | `summary_json` | `DATA_ROOT/objaverse_outpaint/summary.json` |
+| `ObjaverseParam65k` | `valid_scenes_dir` | `DATA_ROOT/objaverse_outpaint/valid_scenes` |
+| `ObjaverseParam65k` | `voxel_cache_dir` (add) | `DATA_ROOT/.runtime/objaverse_outpaint/voxels` |
+
+Create writable cache/log directories. To train on these two sources only,
+keep `3DFrontPano2Pesp` and `objaverse65kOutpaint` under `data.params.dataset`,
+in that order, and remove the other training entries. **FRONT must come first**
+so its collator handles both sources. The release does not supply the other
+FRONT, Infinigen or Orbit data referenced by the original configurations.
+Set validation's `eval_dir` separately to your downloaded `blendswap_eval/`.
+
+Outpaint's mesh paths are relative to the dataset root. After installing the
+training packages, **start training from that directory** (no index conversion
+is needed):
+
+```bash
+export CONFIG="/absolute/path/to/Mira-Scene/example_train/configs/finetune.yaml"
+cd "$DATA_ROOT"
+python -m miraccm.launch --config "$CONFIG" --train
+```
