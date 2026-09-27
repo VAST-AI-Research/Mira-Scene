@@ -1,13 +1,13 @@
 # HF training mixture: 3D-FRONT + Outpaint; BlendSwap for validation.
-# Start training from the dataset root because Outpaint mesh paths are relative.
+# Relative data_root is resolved from the directory where training is launched.
 name: ccm_voxel_scale
 tag: finetune_hf
 exp_root_dir: "${anchors.data_root}/outputs"
 seed: 42
 
 anchors:
-  # "." from the dataset root, or an absolute dataset path.
-  data_root: "."
+  # Relative to the launch directory, or an absolute dataset path.
+  data_root: "./data"
 
   # HF 3D-FRONT
   3DFrontPano2Pesp: &3DFrontPano2Pesp
@@ -40,6 +40,7 @@ anchors:
   # 109k
   ObjaverseParam65k: &ObjaverseParam65k
     summary_json: "${anchors.data_root}/objaverse_outpaint/summary.json"
+    mesh_root: "${anchors.data_root}"
     valid_scenes_dir: "${anchors.data_root}/objaverse_outpaint/valid_scenes"
     voxel_cache_dir: "${anchors.data_root}/.runtime/objaverse_outpaint/voxels"
     height: 518

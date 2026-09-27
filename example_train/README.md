@@ -88,17 +88,13 @@ export DATA_ROOT="/absolute/path/to/mira-scene-data"
 for f in "$DATA_ROOT"/{3dfront,objaverse_outpaint}/shards/*.tar.gz; do tar -xzf "$f" -C "$DATA_ROOT" || exit 1; done
 ```
 
-The package includes the ready-to-use Outpaint `summary.json`. In the HF YAML,
-set `anchors.data_root` to **`.` for relative paths** or **your absolute dataset
-path**; all data/cache paths follow this setting. Set
-`system.params.pretrained_model_name_or_path` to your stage-1 pipeline.
-
-**For either YAML path style, launch from the dataset root:** the mesh paths
-inside the supplied Outpaint index are relative to that directory.
+The package includes the ready-to-use Outpaint `summary.json`. Set
+`anchors.data_root` in the HF YAML to a relative path such as `./data`
+(relative to the launch directory), or an absolute path such as `/datasets/mira`.
+Data, mesh and cache paths follow this setting; **no need to launch from the
+data directory**. Set `system.params.pretrained_model_name_or_path` to your
+stage-1 pipeline, then run from the Mira-Scene checkout:
 
 ```bash
-cd "$DATA_ROOT"
-python -m miraccm.launch \
-  --config /absolute/path/to/Mira-Scene/example_train/configs/finetune_hf.yaml \
-  --train
+python -m miraccm.launch --config example_train/configs/finetune_hf.yaml --train
 ```

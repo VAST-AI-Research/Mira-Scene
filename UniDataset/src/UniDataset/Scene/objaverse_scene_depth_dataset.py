@@ -337,6 +337,7 @@ class ObjaverseSceneDepthDataset(Dataset):
         use_bbox_layout: bool = True,
         skip_exists_check: bool = False,
         canonicalize_azimuth: bool = False,
+        mesh_root: Optional[str] = None,
         **kwargs,
     ):
         super().__init__()
@@ -347,6 +348,8 @@ class ObjaverseSceneDepthDataset(Dataset):
         self.with_mesh = with_mesh
         self.use_bbox_layout = use_bbox_layout
         self.canonicalize_azimuth = canonicalize_azimuth
+        # Optional base for portable mesh paths; omitted preserves legacy behavior.
+        mesh_root = os.path.abspath(mesh_root) if mesh_root is not None else None
 
         # Load summary JSON
         with open(summary_json, "r", encoding="utf-8") as f:
@@ -368,11 +371,14 @@ class ObjaverseSceneDepthDataset(Dataset):
             scene_dir = os.path.join(valid_scenes_dir, f"{obj_id}_{view_str}")
             if not skip_exists_check and not os.path.isdir(scene_dir):
                 continue
+            mesh_path = e["mesh_path"]
+            if mesh_root is not None and not os.path.isabs(mesh_path):
+                mesh_path = os.path.join(mesh_root, mesh_path)
             entries.append({
                 "obj_id": obj_id,
                 "view": view_str,
                 "scene_dir": scene_dir,
-                "mesh_path": e["mesh_path"],
+                "mesh_path": mesh_path,
                 "frame_transform": e["frame_transform"],   # {scale, translate}
                 "camera": e["camera"],                     # {transform_matrix, fov}
             })
