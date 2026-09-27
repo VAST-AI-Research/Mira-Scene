@@ -76,10 +76,25 @@ torchrun --nnodes=4 --nproc_per_node=8 --node_rank=0 \
 
 ## Training data
 
-The configuration files refer to the prepared training datasets used by the
-project. The data preparation and release instructions will be added later.
+The [HF dataset](https://huggingface.co/datasets/Yang-Tian/Mira-Scene-Dataset)
+provides Outpaint / 3D-FRONT training archives and BlendSwap evaluation data.
+Use [`configs/finetune_hf.yaml`](configs/finetune_hf.yaml) for this two-source
+training mixture. It keeps FRONT first and uses BlendSwap for validation.
+See the dataset card for download availability. Extract the training archives
+in place (bash):
 
-**TODO**
+```bash
+export DATA_ROOT="/absolute/path/to/mira-scene-data"
+for f in "$DATA_ROOT"/{3dfront,objaverse_outpaint}/shards/*.tar.gz; do tar -xzf "$f" -C "$DATA_ROOT" || exit 1; done
+```
 
-- [ ] Publish the concrete training data and corresponding download and
-      preparation instructions.
+The package includes the ready-to-use Outpaint `summary.json`. Set
+`anchors.data_root` in the HF YAML to a relative path such as `./data`
+(relative to the launch directory), or an absolute path such as `/datasets/mira`.
+Data, mesh and cache paths follow this setting; **no need to launch from the
+data directory**. Set `system.params.pretrained_model_name_or_path` to your
+stage-1 pipeline, then run from the Mira-Scene checkout:
+
+```bash
+python -m miraccm.launch --config example_train/configs/finetune_hf.yaml --train
+```
