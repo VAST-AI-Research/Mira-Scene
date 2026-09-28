@@ -74,3 +74,9 @@ configuration, checkpoint download, and launch instructions.
   year={2026}
 }
 ```
+
+## License
+
+The Mira-Scene code in this repository is released under the [MIT License](LICENSE).
+Third-party components, pretrained models, and datasets retain their respective
+licenses and terms of use.
