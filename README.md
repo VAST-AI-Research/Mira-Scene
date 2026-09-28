@@ -9,6 +9,22 @@ environment-map generation.
 
 ![Mira-Scene teaser](assets/teaser.jpg)
 
+## 📰 News
+
+> **🔥 Mira-Scene is fully open-source**
+>
+> The Mira-Scene inference pipeline, Mira-CCM, UniDataset, evaluation and
+> visualization tools, example cases, and both the **Stage 1 pretrained
+> checkpoint** and **Stage 2 final checkpoint** are publicly available in this
+> repository and through [Hugging Face](https://huggingface.co/Yang-Tian/Mira-Scene).
+>
+> **✅ Finetuning data is now available**
+>
+> The released Scene data and outpainted Objaverse data are available from the
+> [Mira-Scene Dataset repository](https://huggingface.co/datasets/Yang-Tian/Mira-Scene-Dataset).
+> The large Objaverse rendering data used for pretraining is not included;
+> it can be generated conveniently from the source assets.
+
 ## Inference
 
 The stage-wise pipeline supports resumable execution, multiple depth and mesh
@@ -47,9 +63,6 @@ directly for the second-stage finetuning.
 See the [training guide](example_train/README.md) for installation,
 configuration, checkpoint download, and launch instructions.
 
-## ToDo
-
-- Publish the concrete training data and corresponding download and preparation instructions.
 
 ## Citation
 
