@@ -9,6 +9,13 @@ environment-map generation.
 
 ![Mira-Scene teaser](assets/teaser.jpg)
 
+Agentic systems such as GPT-6 Astra can assemble a scene from scratch, but the
+generated objects drift in geometry, scale, and layout relative to the input
+image. Mira-Scene instead recovers dense, pixel-aligned correspondences and
+places each object so the reconstructed scene stays consistent with the source.
+
+https://github.com/VAST-AI-Research/Mira-Scene/raw/main/assets/with-Astra-half_labeled.mp4
+
 ## 📰 News
 
 > **🔥 Mira-Scene is fully open-source**
@@ -48,6 +55,19 @@ See the [evaluation guide](eval_scripts/docs/eval.md)
 
 Please refer to the [evaluation guide](eval_scripts/docs/eval.md)
 for details.
+
+## Out-of-the-box pipeline
+
+Mira-Scene runs as a ready-to-use pipeline: from a single image it segments
+instances, estimates depth, predicts canonical coordinates, generates object
+meshes, assembles the scene, and renders an environment map — no per-scene
+layout annotation or manual placement.
+
+https://github.com/VAST-AI-Research/Mira-Scene/raw/main/assets/demo1.mp4
+
+https://github.com/VAST-AI-Research/Mira-Scene/raw/main/assets/demo2.mp4
+
+*Two in-the-wild images reconstructed end to end by the released pipeline.*
 
 ## Training
 
