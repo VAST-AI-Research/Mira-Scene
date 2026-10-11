@@ -14,7 +14,7 @@ generated objects drift in geometry, scale, and layout relative to the input
 image. Mira-Scene instead recovers dense, pixel-aligned correspondences and
 places each object so the reconstructed scene stays consistent with the source.
 
-https://github.com/VAST-AI-Research/Mira-Scene/raw/main/assets/with-Astra-half_labeled.mp4
+![Astra builds the scene from scratch with a misaligned layout; Mira-Scene keeps every object pixel-aligned with the input](assets/with-Astra-half_labeled.webp)
 
 ## 📰 News
 
@@ -63,11 +63,10 @@ instances, estimates depth, predicts canonical coordinates, generates object
 meshes, assembles the scene, and renders an environment map — no per-scene
 layout annotation or manual placement.
 
-https://github.com/VAST-AI-Research/Mira-Scene/raw/main/assets/demo1.mp4
+![Segmentation UI](assets/demo1.webp)
 
-https://github.com/VAST-AI-Research/Mira-Scene/raw/main/assets/demo2.mp4
+![End-to-end reconstruction of in-the-wild image](assets/demo2.webp)
 
-*Two in-the-wild images reconstructed end to end by the released pipeline.*
 
 ## Training
 
